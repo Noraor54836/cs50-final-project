@@ -57,7 +57,17 @@ def buy():
         return render_template("buy.html")
     else:
         symbol = request.form.get("symbol")
-        shares = int(request.form.get("shares"))
+        shares_input = request.form.get("shares")
+
+        # Validate it exists
+        if not shares_input:
+            return apology("Must provide number of shares")
+
+        # Validate is numeric and positive integer
+        if not shares_input.isdigit():
+            return apology("Shares must be a positive whole number")
+
+        shares = int(shares_input)
 
         if not symbol:
                 return apology("Must Give Symbol")
@@ -230,11 +240,11 @@ def sell():
         user_cash_db = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
         user_cash = user_cash_db[0]["cash"]
 
-        user_shares = db.execute("SELECT shares FROM transactions WHERE user_id = ? AND symbol = ? GROUP BY symbol", user_id, symbol)
-        user_shares_real = user_shares[0]["shares"]
+        user_shares = db.execute("SELECT SUM(shares) as total_shares FROM transactions WHERE user_id = ? AND symbol = ?", user_id, symbol)
+        user_shares_real = user_shares[0]["total_shares"] or 0
 
         if shares > user_shares_real:
-            return apology("You Do Not Have This Amount Od Shares")
+            return apology("Not enough shares")
 
         uptd_cash = user_cash + transaction_value
 
