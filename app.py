@@ -39,15 +39,32 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    """Show portfolio of stocks"""
     user_id = session["user_id"]
 
-    transactions_db = db.execute("SELECT symbol, SUM(shares) as shares, price FROM transactions WHERE user_id = ? GROUP BY symbol", user_id)
+    rows = db.execute("SELECT symbol, SUM(shares) AS shares FROM transactions WHERE user_id = ? GROUP BY symbol HAVING shares > 0", user_id)
+
+    holdings = []
+    grand_total = 0
+
+    for row in rows:
+        symbol = row["symbol"]
+        shares = row["shares"]
+        stock = lookup(symbol)
+        total = stock["price"] * shares
+        grand_total += total
+
+        holdings.append({
+            "symbol": symbol,
+            "shares": shares,
+            "price": usd(stock['price']),
+            "total": usd(total)
+        })
+
     cash_db = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
     cash = cash_db[0]["cash"]
+    grand_total += cash
 
-    return render_template("index.html", database=transactions_db, cash=cash)
-
+    return render_template("index.html", database=holdings, cash=usd(grand_total))
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
@@ -107,8 +124,12 @@ def buy():
 def history():
     """Show history of transactions"""
     user_id = session["user_id"]
-    transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ?", user_id)
-    return render_template("history.html", transactions = transactions_db)
+    rows = db.execute("SELECT symbol, shares, price, date FROM transactions WHERE user_id = ?", user_id)
+
+    for row in rows:
+        row["price"] = usd(row['price'])
+
+    return render_template("history.html", transactions = rows)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -221,7 +242,13 @@ def sell():
         return render_template("sell.html", symbols=[row["symbol"] for row in symbols_user])
     else:
         symbol = request.form.get("symbol")
-        shares = int(request.form.get("shares"))
+        shares_input = request.form.get("shares")
+        if not shares_input or not shares_input.isdigit():
+            return apology("Must provide valid number of shares")
+
+        shares = int(shares_input)
+        if shares <= 0:
+            return apology("Share Not Allowed")
 
         if not symbol:
                 return apology("Must Give Symbol")
@@ -230,9 +257,6 @@ def sell():
 
         if stock == None:
             return apology("Symbol Does Not Exist")
-
-        if shares < 0:
-            return apology("Share Not Allowed")
 
         transaction_value = shares * stock["price"]
 
