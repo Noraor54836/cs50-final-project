@@ -28,8 +28,15 @@
             <tr>
                 <td></td>
                 <td></td>
+                <th scope="1">Total Cash</th>
+                <th scope="1">{{ user_cash }}</th>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td></td>
                 <th scope="1">Total Amount</th>
-                <th scope="1">${{ cash }}</th>
+                <th scope="1">{{ cash | usd }}</th>
             </tr>
         </tfoot>
     </table>

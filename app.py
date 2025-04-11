@@ -64,7 +64,7 @@ def index():
     cash = cash_db[0]["cash"]
     grand_total += cash
 
-    return render_template("index.html", database=holdings, cash=usd(grand_total))
+    return render_template("index.html", database=holdings, cash=usd(grand_total), user_cash = usd(cash))
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
