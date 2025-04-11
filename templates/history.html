@@ -5,49 +5,25 @@
 {% endblock %}
 
 {% block main %}
-    <div class="section history">
-       <table>
-            <thead>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Symbols</th>
+                <th scope="col">Shares</th>
+                <th scope="col">Price</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in transactions %}
                 <tr>
-                <form action = '/history' method="post">
-                    <th>
-                        <select name="types" id="types">
-                        {% if not type %}
-                            <option disable selected>Types</option>
-                            <option value="buy">Buy</option>
-                            <option value="sell">Sell</option>
-                        {% elif type == "buy" %}
-                            <option value="all">Types</option>
-                            <option disable selected>Buy</option>
-                            <option value="sell">Sell</option>
-                        {% elif type == "sell" %}
-                            <option value="all">Types</option>
-                            <option value="buy">Buy</option>
-                            <option disable selected>Sell</option>
-                        {% endif %}
-                        </select>
-                    </th>
-                </form>
-                    <th> Symbol </th>
-                    <th> Shares </th>
-                    <th> Price </th>
-                    <th> Total </th>
-                    <th> Time </th>
+                    <td>{{ row["symbol"] }}</td>
+                    <td>{{ row["shares"] }}</td>
+                    <td>{{ row["price"] }}</td>
+                    <td>{{ row["date"] }}</td>
                 </tr>
-            </thead>
-                {% for history in data %}
-                    <tr>
-                        <td> {{ history.types }} </td>
-                        <td> {{ history.symbol }} </td>
-                        <td> {{ history.shares }} </td>
-                        <td> {{ history.price }} </td>
-                        <td> {{ history.total }} </td>
-                        <td> {{ history.transacted }} </td>
-                    </tr>
-                {% endfor %}
-            <tbody>
-            </tbody>
-       </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}

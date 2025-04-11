@@ -5,39 +5,15 @@
 {% endblock %}
 
 {% block main %}
-
-{% if not data %}
-  <h1> Buy </h1>
+    <h1>Buy</h1>
     <form action="/buy" method="post">
-        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" type="text" name="symbol" placeholder="SYMBOL">
-        <button class="btn btn-primary" type="submit"> SEARCH </button>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="symbol" placeholder="Symbol" type="text">
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="shares" placeholder="Shares" type="number">
+        </div>
+
+        <button class="btn btn-primary" type="submit">Buy</button>
     </form>
-{% endif %}
-
-    <div class="section">
-      {% if data %}
-      <h1> current balance {{ money }} </h1>
-       <table>
-        <thead>
-          <tr>
-            {% for header in data %}
-                <th> {{ header }} </th>
-            {% endfor %}
-                <th> Amount </th>
-                <th> Action </th>
-          </tr>
-        </thead>
-          <tbody>
-              <tr>
-                <td> {{ data.name }} </td>
-                <td> {{ data.price }} </td>
-                <td> {{ data.symbol }} </td>
-                <td><input autocomplete="off" type="number" required min="1" name="amount" placeholder="amount" id="amount"></td>
-                <td><button id = "buybutton" data-stock = '{{ data | tojson }}' type="button"> buy </button></td>
-              </tr>
-          </tbody>
-       </table>
-      {% endif %}
-    </div>
-
 {% endblock %}

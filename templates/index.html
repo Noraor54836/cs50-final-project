@@ -1,43 +1,36 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Home
+    Portfolio
 {% endblock %}
 
 {% block main %}
-
- <div class="section">
-    <h1> {{username}} port</h1>
-     <table>
-      <thead>
-        <tr>
-          {% for header in stock[0] %}
-              <th> {{ header }} </th>
-          {% endfor %}
-        </tr>
-      </thead>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Symbols</th>
+                <th scope="col">Shares</th>
+                <th scope="col">Price</th>
+                <th scope="col">TOTAL</th>
+            </tr>
+        </thead>
         <tbody>
-            {% for data in stock %}
-              <tr>
-                <td> {{ data.symbol }} </td>
-                <td> {{ data.amount }} </td>
-                <td> {{ data.price }} </td>
-                <td> {{ data.total }} </td>
-              </tr>
+            {% for row in database %}
+                <tr>
+                    <td>{{ row["symbol"] }}</td>
+                    <td>{{ row["shares"] }}</td>
+                    <td>{{ row["price"] }}</td>
+                </tr>
             {% endfor %}
-              <tr>
-                <td colspan="2"></td>
-                <td> Cash </td>
-                <td> {{cash}} </td>
-              </tr>
-              <tr>
-                <td colspan="2"></td>
-                <td> Total </td>
-                <td> {{total}} </td>
-              </tr>
         </tbody>
-     </table>
-  </div>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <th scope="1">Total Amount</th>
+                <th scope="1">{{ cash }}</th>
+            </tr>
+        </tfoot>
+    </table>
 
 {% endblock %}
-

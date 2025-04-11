@@ -5,30 +5,12 @@
 {% endblock %}
 
 {% block main %}
+    <h1>Quote</h1>
     <form action="/quote" method="post">
-        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" type="text" name="symbol" placeholder="SYMBOL">
-        <button class="btn btn-primary" type="submit"> SEARCH </button>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="symbol" placeholder="Symbol" type="text">
+        </div>
+
+        <button class="btn btn-primary" type="submit">Quote</button>
     </form>
-
-    <div class="section">
-      {% if data %}
-       <table>
-        <thead>
-          <tr>
-            {% for header in data %}
-                <th> {{ header }} </th>
-            {% endfor %}
-          </tr>
-        </thead>
-          <tbody>
-              <tr>
-                <td> {{ data.name }} </td>
-                <td> {{ data.price }} </td>
-                <td> {{ data.symbol }} </td>
-              </tr>
-          </tbody>
-       </table>
-      {% endif %}
-    </div>
-
 {% endblock %}
