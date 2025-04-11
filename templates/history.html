@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+    <div class="section history">
+       <table>
+            <thead>
+                <tr>
+                <form action = '/history' method="post">
+                    <th>
+                        <select name="types" id="types">
+                        {% if not type %}
+                            <option disable selected>Types</option>
+                            <option value="buy">Buy</option>
+                            <option value="sell">Sell</option>
+                        {% elif type == "buy" %}
+                            <option value="all">Types</option>
+                            <option disable selected>Buy</option>
+                            <option value="sell">Sell</option>
+                        {% elif type == "sell" %}
+                            <option value="all">Types</option>
+                            <option value="buy">Buy</option>
+                            <option disable selected>Sell</option>
+                        {% endif %}
+                        </select>
+                    </th>
+                </form>
+                    <th> Symbol </th>
+                    <th> Shares </th>
+                    <th> Price </th>
+                    <th> Total </th>
+                    <th> Time </th>
+                </tr>
+            </thead>
+                {% for history in data %}
+                    <tr>
+                        <td> {{ history.types }} </td>
+                        <td> {{ history.symbol }} </td>
+                        <td> {{ history.shares }} </td>
+                        <td> {{ history.price }} </td>
+                        <td> {{ history.total }} </td>
+                        <td> {{ history.transacted }} </td>
+                    </tr>
+                {% endfor %}
+            <tbody>
+            </tbody>
+       </table>
+    </div>
+
+{% endblock %}

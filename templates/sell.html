@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell
+{% endblock %}
+
+{% block main %}
+
+    <div class="section">
+      <h1> current balance {{ cash }} </h1>
+       <table>
+        <thead>
+          <tr>
+                <th>
+                <form action="/sell" method="POST">
+                  <select name='symbol' id='symbol_select'>
+                    {% if not select %}
+                      <option disable selected>symbol</option>
+                    {% else %}
+                      <option value="select"> symbol </option>
+                    {% endif %}
+
+                    {% for data in stock %}
+                      <option value="{{data.symbol}}" {% if select %} selected {% endif %} > {{data.symbol}} </option>
+                    {% endfor %}
+                  </select>
+                </form>
+                </th>
+                <th> Amount </th>
+                <th> price </th>
+                <th> sell </th>
+                <th> total </th>
+          </tr>
+        </thead>
+          <tbody>
+            {% for data in stock %}
+              <tr>
+                <td class="stock-symbol" > {{ data.symbol }} </td>
+                <td> {{ data.amount }} </td>
+                <td class="stock-price"> {{ data.price }} </td>
+                <td><input autocomplete="off" class="sell_input" type="number" required min="1" name="sell_amount" placeholder="sell amount"></td>
+                <td class="stock-total"> 0 </td>
+              </tr>
+            {% endfor %}
+
+              <tr>
+                <td colspan="2"></td>
+                <td> Total Sell </td>
+                <td colspan="2" id="total_sell"> 0 </td>
+              </tr>
+
+              <tr>
+                <td colspan="2"></td>
+                <td colspan="3">
+                  <form id="sell_form" action="/sell" method="POST">
+                    <input type="hidden" name="sell_data" id="sell_data_input">
+                    <button type="submit" id="sell_button"> Sell </button>
+                  </form>
+                </td>
+              </tr>
+          </tbody>
+       </table>
+    </div>
+
+{% endblock %}
