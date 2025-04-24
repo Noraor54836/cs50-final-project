@@ -2,16 +2,18 @@ import React from "react";
 import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 
-import Home from "./component/home";
-import Navbar from "./component/navbar";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
-  return (
-    <div className="App">
-      <Home />
-    </div>
-  );
+  const { isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <Navigate to="/home" replace />;
+  }
+
+  return <Navigate to="/login" replace />;
 }
 
 export default App;

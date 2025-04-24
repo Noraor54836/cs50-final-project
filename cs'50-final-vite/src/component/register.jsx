@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -70,9 +70,6 @@ function Register() {
         setIsRegister(true);
         setUsername_Error("");
         setPassword_Error("");
-        setUsername("");
-        setPassword("");
-        setCon_Password("");
       }
     } catch (err) {
       if (err.response && err.response.status === 401) {
@@ -81,15 +78,15 @@ function Register() {
         console.error("Error:", err);
         setUsername_Error(err.response.data.error);
       }
-
+    } finally {
       setUsername("");
       setPassword("");
       setCon_Password("");
-    } finally {
+
       if (isregister) {
         setTimeout(() => {
           setIsRegister(false);
-          window.location.href = "/login";
+          <Navigate to="/login" />;
         }, 1000);
       }
     }
@@ -196,3 +193,5 @@ function Register() {
     </>
   );
 }
+
+export default Register;
