@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -23,11 +23,27 @@ function Login() {
           withCredentials: true,
         }
       );
+
+      if (res.data.message === "Login successful" && res.status === 200) {
+        setIsLoggedIn(true);
+        setError("");
+      }
     } catch (err) {
       if (err.response && err.response.status === 401) {
         setError("Invalid username or password");
       } else {
         setError("An error occurred. Please try again.");
+        console.error("Error:", err);
+      }
+    } finally {
+      setUsername("");
+      setPassword("");
+
+      if (isLoggedIn) {
+        setTimeout(() => {
+          setIsLoggedIn(false);
+          <Navigate to="/home" />;
+        }, 2000);
       }
     }
   };
@@ -56,6 +72,7 @@ function Login() {
               Login
             </button>
             {error && <p className="error">{error}</p>}
+            {isLoggedIn && <p className="success">Login successful!</p>}
             <p>
               Don't have an account? <Link to="/register">Register</Link>
             </p>
@@ -65,3 +82,5 @@ function Login() {
     </>
   );
 }
+
+export default Login;

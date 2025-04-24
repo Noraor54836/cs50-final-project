@@ -46,7 +46,7 @@ def checklogin():
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT * FROM users WHERE id = %s", (session["user_id"],))
         user = cursor.fetchone()
-        return jsonify({"authenticated": True, "user_id": session["user_id"]})
+        return jsonify({"authenticated": True, "user_id": session["user_id"]}), 200
     except mysql.connector.Error as err:
         return jsonify({"error": str(err)}), 400
     finally:
