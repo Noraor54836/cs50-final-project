@@ -8,11 +8,12 @@ import axios from "axios";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Layout() {
-  const { isAuthenticated, checkAuth } = useAuth();
+  const { isAuthenticated, checkLogin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkAuth();
+    console.log(`layout useEffect ${window.location.pathname}`);
+    checkLogin();
   }, []);
 
   return (

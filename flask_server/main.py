@@ -4,6 +4,7 @@ from flask_session import Session
 import mysql.connector
 from mysql.connector.pooling import MySQLConnectionPool
 
+from datetime import timedelta
 
 from authen import login_required
 
@@ -12,16 +13,21 @@ import hashlib
 import os
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = "your-super-secret-key"
 
-app.config["SESSION_COOKIE_SAMESITE"] = "None"
-app.config["SESSION_COOKIE_SECURE"] = False  # Disable Secure for localhost
-app.config["SESSION_PERMANENT"] = "false"
-app.config["SESSION_TYPE"] = "filesystem"
+app.config.update(
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=False,  # Set to True in production
+    SESSION_PERMANENT=True,
+    PERMANENT_SESSION_LIFETIME=timedelta(days=7),
+    SESSION_TYPE="filesystem",
+    SESSION_FILE_DIR="flask_session",
+)
+
+Session(app)
 
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
-Session(app)
 
 # db connection
 host = "localhost"
@@ -120,7 +126,10 @@ def login():
         if hashed_password != user["password_hash"]:
             return jsonify({"error": "Invalid username or password"}), 401
 
+        session.clear()
+        session.permanent = True
         session["user_id"] = user["id"]
+        print("login", session["user_id"], session, username)
         return jsonify({"message": "Login successful", "user_id": user["id"]}), 200
     except mysql.connector.Error as err:
         return jsonify({"error": str(err)}), 400
@@ -130,4 +139,4 @@ def login():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=True, port=5001)

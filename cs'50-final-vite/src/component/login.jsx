@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -10,6 +10,8 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const navigate = useNavigate();
 
   const Loginsubmit = async () => {
     try {
@@ -27,6 +29,12 @@ function Login() {
       if (res.data.message === "Login successful" && res.status === 200) {
         setIsLoggedIn(true);
         setError("");
+        console.log("Login successful", res.data);
+
+        setTimeout(() => {
+          setIsLoggedIn(false);
+          navigate("/home");
+        }, 2000);
       }
     } catch (err) {
       if (err.response && err.response.status === 401) {
@@ -38,13 +46,6 @@ function Login() {
     } finally {
       setUsername("");
       setPassword("");
-
-      if (isLoggedIn) {
-        setTimeout(() => {
-          setIsLoggedIn(false);
-          <Navigate to="/home" />;
-        }, 2000);
-      }
     }
   };
 
@@ -60,6 +61,7 @@ function Login() {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              autoComplete="off"
             />
             <label htmlFor="password">Password:</label>
             <input
@@ -67,6 +69,7 @@ function Login() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="off"
             />
             <button type="button" onClick={Loginsubmit}>
               Login
