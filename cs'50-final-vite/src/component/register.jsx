@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Register() {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [con_password, setCon_Password] = useState("");
@@ -34,7 +36,7 @@ function Register() {
       setUsername("");
       return;
     }
-    if (password.length < 8 || username.length < 3) {
+    if (password.length < 9 || username.length < 4) {
       setPassword_Error(
         "Password must be at least 8 characters and username must be at least 3 characters"
       );
@@ -52,28 +54,35 @@ function Register() {
     }
 
     try {
-      username = username.trim();
-      password = password.trim();
+      const trimmedUsername = username.trim();
+      const trimmedPassword = password.trim();
 
       const res = await axios.post(
         `${backendUrl}/register`,
         {
-          username,
-          password,
+          username: trimmedUsername,
+          password: trimmedPassword,
         },
         {
           withCredentials: true,
         }
       );
 
-      if (res.status === 200) {
+      if (res.status === 201) {
         setIsRegister(true);
         setUsername_Error("");
         setPassword_Error("");
+        console.log(res.data, res);
+
+        setTimeout(() => {
+          setIsRegister(false);
+          navigate("/login");
+        }, 2000);
       }
     } catch (err) {
       if (err.response && err.response.status === 401) {
         setUsername_Error("Username already exists");
+        console.error("Error:", err.response.data);
       } else {
         console.error("Error:", err);
         setUsername_Error(err.response.data.error);
@@ -83,63 +92,56 @@ function Register() {
       setPassword("");
       setCon_Password("");
 
-      if (isregister) {
-        setTimeout(() => {
-          setIsRegister(false);
-          <Navigate to="/login" />;
-        }, 1000);
-      }
+      console.log("finally");
     }
   };
 
   const handleInputUsername = (e) => {
-    const { data, target } = e;
+    const { nativeEvent, target } = e;
+    const { data } = nativeEvent;
     const { value } = target;
 
     if (data === " ") {
       setUsername_Error("Username cannot have white space");
-      setUsername(value.slice(0, -1));
       return;
     }
 
-    if (value.length < 3) {
+    if (value.length < 4) {
       setUsername_Error("Username must be at least 3 characters");
-    } else {
-      setUsername_Error("");
-    }
-
-    if (value.length > 20) {
+    } else if (value.length > 20) {
       setUsername_Error("Username must be less than 20 characters");
-      setUsername(value.slice(0, -1));
       return;
     } else {
       setUsername_Error("");
     }
+
+    setUsername(value);
+
+    console.log(`Username: ${username}, ${data}, ${value.length}`);
   };
 
   const handleInputPassword = (e) => {
-    const { data, target } = e;
+    const { nativeEvent, target } = e;
+    const { data } = nativeEvent;
     const { value } = target;
 
     if (data === " ") {
       setPassword_Error("Password cannot have white space");
-      setPassword(value.slice(0, -1));
       return;
     }
 
-    if (value.length < 8) {
+    if (value.length < 9) {
       setPassword_Error("Password must be at least 8 characters");
-    } else {
-      setPassword_Error("");
-    }
-
-    if (value.length > 20) {
+    } else if (value.length > 20) {
       setPassword_Error("Password must be less than 20 characters");
-      setPassword(value.slice(0, -1));
       return;
     } else {
       setPassword_Error("");
     }
+
+    setPassword(value);
+
+    console.log(`Password: ${password}`);
   };
 
   return (
@@ -154,10 +156,10 @@ function Register() {
               id="username"
               value={username}
               onChange={(e) => {
-                setUsername(e.target.value);
                 handleInputUsername(e);
               }}
               required
+              autoComplete="off"
             />
             {username_error && <p className="error">{username_error}</p>}
             <label htmlFor="password">Password:</label>
@@ -166,10 +168,10 @@ function Register() {
               id="password"
               value={password}
               onChange={(e) => {
-                setPassword(e.target.value);
                 handleInputPassword(e);
               }}
               required
+              autoComplete="off"
             />
             <label htmlFor="con_password">Confirm Password:</label>
             <input
@@ -178,6 +180,7 @@ function Register() {
               value={con_password}
               onChange={(e) => setCon_Password(e.target.value)}
               required
+              autoComplete="off"
             />
             {password_error && <p className="error">{password_error}</p>}
             <button type="button" onClick={Registersubmit}>

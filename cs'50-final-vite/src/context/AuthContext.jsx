@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
 import axios from "axios";
 
-backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const AuthContext = createContext(null);
 
@@ -18,16 +18,12 @@ export const AuthProvider = ({ children }) => {
       if (res.data.authenticated === true && res.status === 200) {
         setIsLoggedIn(true);
         setUser(res.data.user_id);
-        return true;
+        console.log("User is logged in", res.data);
       }
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        console.error("Error:", err.response.data);
-        setIsAuthenticated(false);
-        setUser(null);
-        return false;
-      }
-      return false;
+      console.error("Error:", err.response.data);
+      setIsLoggedIn(false);
+      setUser(null);
     }
   };
 
