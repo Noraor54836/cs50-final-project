@@ -3,6 +3,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
+import StarBackground from "./starbg";
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Login() {
@@ -52,35 +54,40 @@ function Login() {
   return (
     <>
       <div className="container login">
-        <h1>Login</h1>
-        <form>
-          <div className="login-form">
-            <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="off"
-            />
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="off"
-            />
-            <button type="button" onClick={Loginsubmit}>
-              Login
-            </button>
-            {error && <p className="error">{error}</p>}
-            {isLoggedIn && <p className="success">Login successful!</p>}
-            <p>
-              Don't have an account? <Link to="/register">Register</Link>
-            </p>
-          </div>
-        </form>
+        <StarBackground></StarBackground>
+        <div className="login_layout">
+          <form>
+            <div className="login-form">
+              <h1>Login</h1>
+              <div className="text-login">
+                <label htmlFor="username">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  autoComplete="off"
+                />
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="off"
+                />
+              </div>
+              <button type="button" onClick={Loginsubmit}>
+                Login
+              </button>
+              {error && <p className="error">{error}</p>}
+              {isLoggedIn && <p className="success">Login successful!</p>}
+              <p>
+                Don't have an account? <Link to="/register">Register</Link>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );

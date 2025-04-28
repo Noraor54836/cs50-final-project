@@ -138,5 +138,15 @@ def login():
         connection.close()
 
 
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    try:
+        session.clear()
+        return jsonify({"message": "Logout successful"}), 200
+    except Exception as err:
+        return jsonify({"error": str(err)}), 400
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5001)
