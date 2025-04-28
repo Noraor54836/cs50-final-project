@@ -17,12 +17,12 @@ function Layout() {
   }, []);
 
   return (
-    <>
-      <Navbar login={isAuthenticated} />
+    <div className="app">
+      <Navbar />
       <main>
         <Outlet />
       </main>
-    </>
+    </div>
   );
 }
 

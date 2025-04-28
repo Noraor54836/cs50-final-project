@@ -16,15 +16,134 @@ nav {
   }
 }
 
-.App {
+.app {
   background-color: #2c2c2c;
   color: #fff7f3;
   height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .home {
   h1 {
     font-size: 3rem;
     margin: 0;
+  }
+}
+
+.login {
+  background-color: rgb(242, 239, 239);
+  height: 100vh;
+  display: flex;
+  justify-content: start;
+
+  .login_layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100vh;
+
+    form {
+      width: calc(100% - 10rem);
+      margin-bottom: 25rem;
+
+      .login-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        h1 {
+          font-size: 5rem;
+          color: black;
+          margin: 0;
+        }
+
+        .text-login {
+          text-align: start;
+
+          label {
+            font-size: 2rem;
+            color: black;
+            margin: 0;
+          }
+
+          input {
+            width: calc(100% - 5rem);
+            padding: 1rem;
+            border-radius: 10px;
+            border: black 2px solid;
+            font-size: 2rem;
+            background-color: #f0f0f0;
+          }
+        }
+      }
+    }
+  }
+}
+
+.star-background {
+  background-color: #050a24;
+  position: relative;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+
+  .star {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 2px;
+    width: 2px;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: -23vw -42vh 4px 1px #fff, 15vw -38vh 4px 1px #fff,
+      -18vw -28vh 4px 1px #fff, 25vw -15vh 4px 1px #fff, -12vw -8vh 4px 1px #fff,
+      20vw 5vh 4px 1px #fff, -22vw 18vh 4px 1px #fff, 16vw 25vh 4px 1px #fff,
+      -15vw 35vh 4px 1px #fff, 23vw 42vh 4px 1px #fff, -8vw -45vh 3px 0.5px #fff,
+      12vw -32vh 3px 0.5px #fff, -20vw -20vh 3px 0.5px #fff,
+      7vw -12vh 3px 0.5px #fff, -15vw 0vh 3px 0.5px #fff,
+      10vw 15vh 3px 0.5px #fff, -18vw 28vh 3px 0.5px #fff,
+      13vw 38vh 3px 0.5px #fff, -5vw -40vh 2px 0.2px rgba(255, 255, 255, 0.9),
+      18vw -35vh 2px 0.2px rgba(255, 255, 255, 0.9),
+      -24vw -25vh 2px 0.2px rgba(255, 255, 255, 0.9),
+      8vw -18vh 2px 0.2px rgba(255, 255, 255, 0.9),
+      -16vw -5vh 2px 0.2px rgba(255, 255, 255, 0.9),
+      22vw 8vh 2px 0.2px rgba(255, 255, 255, 0.9),
+      -10vw 20vh 2px 0.2px rgba(255, 255, 255, 0.9),
+      14vw 32vh 2px 0.2px rgba(255, 255, 255, 0.9);
+    animation: initialZoom 3s ease-in,
+      hoverZoom 10s cubic-bezier(0.4, 0, 0.2, 1) alternate infinite paused;
+  }
+
+  &:hover .star {
+    animation-play-state: running;
+  }
+}
+
+@keyframes initialZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.4);
+  }
+}
+
+@keyframes hoverZoom {
+  0% {
+    transform: scale(1.3);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: scale(1.8);
+    animation-timing-function: ease-in;
   }
 }

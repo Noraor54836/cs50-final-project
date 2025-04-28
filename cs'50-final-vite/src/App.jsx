@@ -7,9 +7,9 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isLoggedIn } = useAuth();
 
-  if (isAuthenticated) {
+  if (isLoggedIn) {
     return <Navigate to="/home" replace />;
   }
 

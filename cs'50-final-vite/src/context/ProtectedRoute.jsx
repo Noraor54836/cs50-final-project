@@ -17,6 +17,7 @@ const ProtectedRoute = () => {
   }, []);
 
   if (isChecking) {
+    console.log("ProtectedRoute: Checking authentication...");
     return <div>Loading...</div>; // Or your loading component
   }
 

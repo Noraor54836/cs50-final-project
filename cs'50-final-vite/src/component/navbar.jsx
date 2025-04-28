@@ -1,8 +1,19 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
-function Navbar({ login }) {
+import Logout from "./logout";
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+function Navbar() {
+  const { isLoggedIn } = useAuth();
+  const login = isLoggedIn;
+
+  const [logout_component, setLogout_Component] = useState(false);
+
   if (!login) {
     return (
       <nav>
@@ -12,9 +23,14 @@ function Navbar({ login }) {
     );
   } else {
     return (
-      <nav>
-        <Link to="/">Home</Link>
-      </nav>
+      <>
+        <nav>
+          <Link to="/">Home</Link>
+          <Link onClick={() => setLogout_Component(true)}> Logout </Link>
+        </nav>
+
+        <Logout shown={logout_component} setShown={setLogout_Component} />
+      </>
     );
   }
 }
