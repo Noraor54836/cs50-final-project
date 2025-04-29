@@ -53,6 +53,8 @@ nav {
     form {
       width: calc(100% - 10rem);
       margin-bottom: 25rem;
+      border-radius: 20px;
+      box-shadow: 0 25px 25px rgba(0, 0, 0, 0.1);
 
       .login-form {
         display: flex;
@@ -68,6 +70,7 @@ nav {
 
         .text-login {
           text-align: start;
+          padding-left: 1rem;
 
           label {
             font-size: 2rem;
@@ -84,6 +87,81 @@ nav {
             background-color: #f0f0f0;
           }
         }
+
+        .login_button {
+          position: relative;
+          width: calc(100% - 30rem);
+          padding: 1rem;
+          background-color: #4285f4;
+          border-radius: 10px;
+          font-size: 2rem;
+          margin: 1rem 0;
+          color: white;
+          font-weight: bold;
+          box-shadow: 0 15px 20px rgba(0, 0, 0, 24%);
+          cursor: pointer;
+          transition: 0.5s;
+          overflow: hidden;
+        }
+
+        .login_button::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(45deg, #56ccf2, #2f80ed);
+          border-radius: inherit;
+          opacity: 0;
+          transition: 0.5s;
+        }
+
+        .login_button::after {
+          content: "";
+          position: absolute;
+          bottom: -10px;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(45deg, #56ccf2, #2f80ed);
+          border-radius: 20px;
+          transition: 0.5s;
+          filter: blur(15px);
+          z-index: -1;
+          opacity: 0;
+        }
+
+        .login_button span {
+          position: relative;
+          z-index: 1;
+        }
+
+        .login_button:hover::before {
+          opacity: 1;
+        }
+
+        .login_button:hover::after {
+          opacity: 0.5;
+        }
+
+        .login_button:hover {
+          width: calc(100% - 10rem);
+          border-radius: 20px;
+          transform: translateY(5px);
+          font-size: 2.5rem;
+        }
+
+        p {
+          color: #1a1a1d;
+          font-size: 1.5rem;
+        }
+
+        .error {
+          color: red;
+          font-size: 2rem;
+        }
+
+        .success {
+          color: green;
+          font-size: 2rem;
+        }
       }
     }
   }
@@ -95,37 +173,67 @@ nav {
   width: 50%;
   height: 100%;
   overflow: hidden;
+  cursor: pointer;
+}
 
-  .star {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    height: 2px;
-    width: 2px;
-    background-color: #fff;
-    border-radius: 50%;
-    box-shadow: -23vw -42vh 4px 1px #fff, 15vw -38vh 4px 1px #fff,
-      -18vw -28vh 4px 1px #fff, 25vw -15vh 4px 1px #fff, -12vw -8vh 4px 1px #fff,
-      20vw 5vh 4px 1px #fff, -22vw 18vh 4px 1px #fff, 16vw 25vh 4px 1px #fff,
-      -15vw 35vh 4px 1px #fff, 23vw 42vh 4px 1px #fff, -8vw -45vh 3px 0.5px #fff,
-      12vw -32vh 3px 0.5px #fff, -20vw -20vh 3px 0.5px #fff,
-      7vw -12vh 3px 0.5px #fff, -15vw 0vh 3px 0.5px #fff,
-      10vw 15vh 3px 0.5px #fff, -18vw 28vh 3px 0.5px #fff,
-      13vw 38vh 3px 0.5px #fff, -5vw -40vh 2px 0.2px rgba(255, 255, 255, 0.9),
-      18vw -35vh 2px 0.2px rgba(255, 255, 255, 0.9),
-      -24vw -25vh 2px 0.2px rgba(255, 255, 255, 0.9),
-      8vw -18vh 2px 0.2px rgba(255, 255, 255, 0.9),
-      -16vw -5vh 2px 0.2px rgba(255, 255, 255, 0.9),
-      22vw 8vh 2px 0.2px rgba(255, 255, 255, 0.9),
-      -10vw 20vh 2px 0.2px rgba(255, 255, 255, 0.9),
-      14vw 32vh 2px 0.2px rgba(255, 255, 255, 0.9);
-    animation: initialZoom 3s ease-in,
-      hoverZoom 10s cubic-bezier(0.4, 0, 0.2, 1) alternate infinite paused;
-  }
+.star {
+  position: absolute;
+  cursor: pointer;
+  top: 50%;
+  left: 50%;
+  height: 2px;
+  width: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: -23vw -42vh 4px 1px #fff, 15vw -38vh 4px 1px #fff,
+    -18vw -28vh 4px 1px #fff, 25vw -15vh 4px 1px #fff, -12vw -8vh 4px 1px #fff,
+    20vw 5vh 4px 1px #fff, -22vw 18vh 4px 1px #fff, 16vw 25vh 4px 1px #fff,
+    -15vw 35vh 4px 1px #fff, 23vw 42vh 4px 1px #fff, -8vw -45vh 3px 0.5px #fff,
+    12vw -32vh 3px 0.5px #fff, -20vw -20vh 3px 0.5px #fff,
+    7vw -12vh 3px 0.5px #fff, -15vw 0vh 3px 0.5px #fff, 10vw 15vh 3px 0.5px #fff,
+    -18vw 28vh 3px 0.5px #fff, 13vw 38vh 3px 0.5px #fff,
+    -5vw -40vh 2px 0.2px rgba(255, 255, 255, 0.9),
+    18vw -35vh 2px 0.2px rgba(255, 255, 255, 0.9),
+    -24vw -25vh 2px 0.2px rgba(255, 255, 255, 0.9),
+    8vw -18vh 2px 0.2px rgba(255, 255, 255, 0.9),
+    -16vw -5vh 2px 0.2px rgba(255, 255, 255, 0.9),
+    22vw 8vh 2px 0.2px rgba(255, 255, 255, 0.9),
+    -10vw 20vh 2px 0.2px rgba(255, 255, 255, 0.9),
+    14vw 32vh 2px 0.2px rgba(255, 255, 255, 0.9);
+  animation: initialZoom 3s ease-in forwards;
+  transform-origin: center center;
+  will-change: transform;
+}
 
-  &:hover .star {
-    animation-play-state: running;
-  }
+.star.animation-complete {
+  transform: scale(1.4);
+  animation: none;
+  transition: transform 0.1s ease-out;
+}
+
+.gradient-text {
+  position: absolute;
+  bottom: 1rem;
+  margin-left: 1.5rem;
+  background-color: white;
+  background-color: #050a24;
+  background-image: linear-gradient(45deg, #ffffff, #7b86c1, #1f2d6d);
+  background-size: 100%;
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.4rem;
+  animation: text-gradient 3s ease-in forwards;
+  will-change: background-size;
+}
+
+.gradient-text.animation-complete {
+  background-size: 100%;
+  animation: none;
+  transition: background-size 0.1s ease-out;
 }
 
 @keyframes initialZoom {
@@ -137,13 +245,11 @@ nav {
   }
 }
 
-@keyframes hoverZoom {
+@keyframes text-gradient {
   0% {
-    transform: scale(1.3);
-    animation-timing-function: ease-out;
+    background-size: 650%;
   }
   100% {
-    transform: scale(1.8);
-    animation-timing-function: ease-in;
+    background-size: 100%;
   }
 }

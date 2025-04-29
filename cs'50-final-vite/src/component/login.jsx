@@ -54,11 +54,12 @@ function Login() {
   return (
     <>
       <div className="container login">
-        <StarBackground></StarBackground>
+        <StarBackground content="login" />
         <div className="login_layout">
           <form>
             <div className="login-form">
               <h1>Login</h1>
+
               <div className="text-login">
                 <label htmlFor="username">Username</label>
                 <input
@@ -77,13 +78,17 @@ function Login() {
                   autoComplete="off"
                 />
               </div>
-              <button type="button" onClick={Loginsubmit}>
-                Login
+              <button
+                type="button"
+                className="login_button"
+                onClick={Loginsubmit}
+              >
+                <span>Login</span>
               </button>
               {error && <p className="error">{error}</p>}
               {isLoggedIn && <p className="success">Login successful!</p>}
               <p>
-                Don't have an account? <Link to="/register">Register</Link>
+                Don't have an account? <Link to="/register">Sign up</Link>
               </p>
             </div>
           </form>
