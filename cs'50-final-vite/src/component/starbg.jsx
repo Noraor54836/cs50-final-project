@@ -8,8 +8,11 @@ function StarBackground(props) {
   const [starScale, setStarScale] = useState(1.4);
   const [textSize, setTextSize] = useState(100);
 
-  const starAnimRef = useRef(null);
-  const textAnimRef = useRef(null);
+  const starAnimationRef = useRef(null);
+  const textAnimationRef = useRef(null);
+
+  const starAnimationtime = useRef(0);
+  const textAnimationtime = useRef(0);
 
   // Wait for 3 seconds before enabling hover animations
   useEffect(() => {
@@ -18,64 +21,84 @@ function StarBackground(props) {
   }, []);
 
   // Animation helpers
-  const animate = (ref, updater, duration, keyframeFn, animRef, time = 0) => {
-    const progress = (time % duration) / duration;
-    const value = keyframeFn(progress);
-    if (ref.current) {
-      updater(ref.current, value);
+  const animateStar = (timeElapsed = 0) => {
+    if (!starRef.current) return;
+
+    const animationDuration = 8000; // 8 seconds
+    const progress = (timeElapsed % animationDuration) / animationDuration;
+
+    let scale;
+    if (progress < 0.33) {
+      scale = 1.4 + 0.5 * (progress / 0.33); // zoom in
+    } else if (progress < 0.66) {
+      scale = 1.9 - 0.5 * ((progress - 0.33) / 0.33); // zoom out
+    } else {
+      scale = 1.4; // hold
     }
-    animRef.current = requestAnimationFrame(() =>
-      animate(ref, updater, duration, keyframeFn, animRef, time + 16.67)
+
+    starRef.current.style.transform = `scale(${scale})`;
+    setStarScale(scale); // save current scale
+
+    const nextTime = timeElapsed + 16.67; // ~60fps
+    starAnimationtime.current = nextTime;
+
+    starAnimationRef.current = requestAnimationFrame(() =>
+      animateStar(nextTime)
+    );
+  };
+
+  const animateText = (timeElapsed = 0) => {
+    const animationDuration = 7000;
+    const progress = (timeElapsed % animationDuration) / animationDuration;
+
+    let size;
+    if (progress < 0.5) {
+      size = 100 + 300 * (progress / 0.5); // Zoom in
+    } else {
+      size = 400 - 300 * ((progress - 0.5) / 0.5); // Zoom out
+    }
+
+    textRef.current.style.backgroundSize = `${size}%`;
+    setTextSize(size);
+
+    const nextTime = timeElapsed + 16.67; // ~60fps
+    textAnimationtime.current = nextTime;
+
+    textAnimationRef.current = requestAnimationFrame(() =>
+      animateText(nextTime)
     );
   };
 
   const handleMouseEnter = () => {
     if (!initialAnimationDone) return;
 
-    animate(
-      starRef,
-      (el, scale) => {
-        el.style.transform = `scale(${scale})`;
-        setStarScale(scale);
-      },
-      8000,
-      (p) =>
-        p < 0.33
-          ? 1.4 + 0.5 * (p / 0.33)
-          : p < 0.66
-          ? 1.9 - 0.5 * ((p - 0.33) / 0.33)
-          : 1.4,
-      starAnimRef
+    starRef.current.style.transform = `scale(${starScale})`;
+    starAnimationRef.current = requestAnimationFrame(() =>
+      animateStar(starAnimationtime.current)
     );
 
-    animate(
-      textRef,
-      (el, size) => {
-        el.style.backgroundSize = `${size}%`;
-        setTextSize(size);
-      },
-      4000,
-      (p) => (p < 0.5 ? 100 + 550 * (p / 0.5) : 650 - 550 * ((p - 0.5) / 0.5)),
-      textAnimRef
+    textRef.current.style.backgroundSize = `${textSize}%`;
+    textAnimationRef.current = requestAnimationFrame(() =>
+      animateText(textAnimationtime.current)
     );
   };
 
   const handleMouseLeave = () => {
-    cancelAnimationFrame(starAnimRef.current);
-    cancelAnimationFrame(textAnimRef.current);
+    cancelAnimationFrame(starAnimationRef.current);
+    cancelAnimationFrame(textAnimationRef.current);
   };
 
   // Clean up on unmount
   useEffect(() => {
     return () => {
-      cancelAnimationFrame(starAnimRef.current);
-      cancelAnimationFrame(textAnimRef.current);
+      cancelAnimationFrame(starAnimationRef.current);
+      cancelAnimationFrame(textAnimationRef.current);
     };
   }, []);
 
   return (
     <div
-      className="star-background"
+      className={`star-background ${props.content + "-bg"}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
