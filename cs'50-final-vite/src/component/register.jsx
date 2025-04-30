@@ -3,6 +3,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
+import StarBackground from "./starbg";
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Register() {
@@ -147,44 +149,54 @@ function Register() {
   return (
     <>
       <div className="container register">
-        <h1>Register</h1>
+        <StarBackground content="register" />
         <form>
           <div className="register-form">
-            <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => {
-                handleInputUsername(e);
-              }}
-              required
-              autoComplete="off"
-            />
-            {username_error && <p className="error">{username_error}</p>}
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => {
-                handleInputPassword(e);
-              }}
-              required
-              autoComplete="off"
-            />
-            <label htmlFor="con_password">Confirm Password:</label>
-            <input
-              type="password"
-              id="con_password"
-              value={con_password}
-              onChange={(e) => setCon_Password(e.target.value)}
-              required
-              autoComplete="off"
-            />
-            {password_error && <p className="error">{password_error}</p>}
-            <button type="button" onClick={Registersubmit}>
-              Register
+            <h1>Create an account</h1>
+
+            <div className="text-register">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => {
+                  handleInputUsername(e);
+                }}
+                required
+                autoComplete="off"
+              />
+              {username_error && <p className="error">{username_error}</p>}
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => {
+                  handleInputPassword(e);
+                }}
+                required
+                autoComplete="off"
+              />
+              <label htmlFor="con_password">Confirm Password</label>
+              <input
+                type="password"
+                id="con_password"
+                value={con_password}
+                onChange={(e) => setCon_Password(e.target.value)}
+                required
+                autoComplete="off"
+              />
+
+              {password_error && <p className="error">{password_error}</p>}
+            </div>
+
+            <button
+              type="button"
+              className="register_button"
+              onClick={Registersubmit}
+            >
+              <span>Create</span>
             </button>
             {isregister && <p className="success">Registration successful!</p>}
             <p>

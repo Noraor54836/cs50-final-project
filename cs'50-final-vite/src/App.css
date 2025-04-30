@@ -36,6 +36,8 @@ nav {
   }
 }
 
+/* login page */
+
 .login {
   background-color: rgb(242, 239, 239);
   height: 100vh;
@@ -167,13 +169,162 @@ nav {
   }
 }
 
+/* register page  */
+.register {
+  background-color: rgb(242, 239, 239);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  form {
+    background-color: #151316;
+    margin-bottom: 15rem;
+    border-radius: 20px;
+    box-shadow: 0 7px 30px rgb(111 111 111 / 10%);
+    z-index: 1;
+    width: calc(100% - 60rem);
+    position: relative;
+    padding-top: 2rem;
+
+    .register-form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      a {
+        color: #56ccf2;
+      }
+
+      p {
+        font-size: 1.5rem;
+      }
+
+      .error {
+        color: red;
+        font-size: 1.5rem;
+        margin-left: 2rem;
+      }
+
+      .success {
+        color: green;
+        font-size: 1.5rem;
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        color: white;
+      }
+
+      .text-register {
+        width: calc(100% - 15rem);
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        text-align: center;
+        margin-left: 1rem;
+
+        label {
+          font-size: 1.5rem;
+          color: white;
+          margin-bottom: 0.5rem;
+          margin-left: 2rem;
+        }
+
+        input {
+          width: calc(100% - 5rem);
+          padding: 0.5rem;
+          border-radius: 10px;
+          border: black 2px solid;
+          font-size: 2rem;
+          background-color: #f0f0f0;
+          margin: auto;
+          margin-bottom: 1rem;
+        }
+      }
+
+      .register_button {
+        position: relative;
+        width: calc(100% - 30rem);
+        padding: 1rem;
+        background-color: #4285f4;
+        border-radius: 10px;
+        font-size: 2rem;
+        margin: 1rem 0;
+        color: white;
+        font-weight: bold;
+        box-shadow: 8px 13px 13px rgba(173, 173, 173, 0.1);
+        cursor: pointer;
+        transition: 0.5s;
+        overflow: hidden;
+      }
+
+      .register_button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(45deg, #56ccf2, #2f80ed);
+        border-radius: inherit;
+        opacity: 0;
+        transition: 0.5s;
+      }
+
+      .register_button::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #56ccf2, #2f80ed);
+        border-radius: 20px;
+        transition: 0.5s;
+        filter: blur(15px);
+        z-index: -1;
+        opacity: 0;
+      }
+
+      .register_button span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .register_button:hover::before {
+        opacity: 1;
+      }
+
+      .register_button:hover::after {
+        opacity: 0.5;
+      }
+
+      .register_button:hover {
+        width: calc(100% - 20rem);
+        border-radius: 20px;
+        transform: translateY(5px);
+        font-size: 2.5rem;
+      }
+    }
+  }
+}
+
+/* back ground  */
+
 .star-background {
   background-color: #050a24;
   position: relative;
-  width: 50%;
+  width: 100%;
   height: 100%;
   overflow: hidden;
   cursor: pointer;
+}
+
+.star-background.login-bg {
+  width: 50%;
+}
+
+.star-background.register-bg {
+  position: absolute;
+  z-index: 0;
 }
 
 .star {
@@ -213,8 +364,8 @@ nav {
 
 .gradient-text {
   position: absolute;
-  bottom: 1rem;
-  margin-left: 1.5rem;
+  margin-top: 35%;
+  margin-left: 4rem;
   background-color: white;
   background-color: #050a24;
   background-image: linear-gradient(45deg, #ffffff, #7b86c1, #1f2d6d);
@@ -225,7 +376,7 @@ nav {
   -moz-background-clip: text;
   -moz-text-fill-color: transparent;
   background-clip: text;
-  font-size: 2.4rem;
+  font-size: 2.2rem;
   animation: text-gradient 3s ease-in forwards;
   will-change: background-size;
 }
@@ -247,7 +398,7 @@ nav {
 
 @keyframes text-gradient {
   0% {
-    background-size: 650%;
+    background-size: 300%;
   }
   100% {
     background-size: 100%;
