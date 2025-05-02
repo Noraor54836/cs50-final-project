@@ -31,7 +31,7 @@ function Logout({ shown, setShown }) {
           checkLogin();
           setShown(false);
           console.log("Redirecting to home", window.location.pathname);
-          navigate("/login");
+          navigate("/login", { replace: true });
         }, 1500);
       }
     } catch (err) {

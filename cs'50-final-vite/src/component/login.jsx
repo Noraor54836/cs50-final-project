@@ -35,7 +35,7 @@ function Login() {
 
         setTimeout(() => {
           setIsLoggedIn(false);
-          navigate("/home");
+          navigate("/home", { replace: true });
         }, 2000);
       }
     } catch (err) {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 function StarBackground(props) {
   const [initialAnimationDone, setInitialAnimationDone] = useState(false);
@@ -71,6 +72,7 @@ function StarBackground(props) {
 
   const handleMouseEnter = () => {
     if (!initialAnimationDone) return;
+    if (props.content === "home") return;
 
     starRef.current.style.transform = `scale(${starScale})`;
     starAnimationRef.current = requestAnimationFrame(() =>
@@ -104,19 +106,52 @@ function StarBackground(props) {
     >
       <div
         ref={starRef}
-        className={`star ${initialAnimationDone ? "animation-complete" : ""}`}
+        className={`star ${
+          initialAnimationDone && props.content != "home"
+            ? "animation-complete"
+            : ""
+        } 
+        ${props.content}`}
       ></div>
-      {props.content === "login" && (
-        <h3
-          ref={textRef}
-          className={`gradient-text ${
-            initialAnimationDone ? "animation-complete" : ""
-          }`}
-        >
-          Welcome if you want to Develop yourself,
-          <br /> you come to right website, Let's be new together.
-        </h3>
-      )}
+
+      {(() => {
+        if (props.content === "login") {
+          return (
+            <h3
+              ref={textRef}
+              className={`gradient-text ${
+                initialAnimationDone ? "animation-complete" : ""
+              } ${props.content}`}
+            >
+              Welcome if you want to Develop yourself,
+              <br /> you come to right website, Let's be new together.
+            </h3>
+          );
+        } else if (props.content === "home") {
+          if (props.user) {
+            return (
+              <div className="main_goal_text">
+                <h1 className={`gradient-text ${props.content + "-text"}`}>
+                  {" "}
+                  Road to <br /> {props.user}
+                </h1>
+              </div>
+            );
+          } else {
+            return (
+              <div className="main_goal_text">
+                <h1 className={`gradient-text ${props.content + "-text"}`}>
+                  Set your main goal <br />{" "}
+                  <Link to="/account" className="account-link gradient-text">
+                    your account
+                  </Link>
+                </h1>
+              </div>
+            );
+          }
+        }
+        return null;
+      })()}
     </div>
   );
 }

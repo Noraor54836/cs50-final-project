@@ -6,6 +6,8 @@ import { useAuth } from "../context/AuthContext";
 
 import Logout from "./logout";
 
+import { AccountIcon } from "../assets/account-icon.jsx";
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Navbar() {
@@ -27,6 +29,9 @@ function Navbar() {
         <nav>
           <Link to="/">Home</Link>
           <Link onClick={() => setLogout_Component(true)}> Logout </Link>
+          <Link to="/account">
+            <AccountIcon />
+          </Link>
         </nav>
 
         <Logout shown={logout_component} setShown={setLogout_Component} />
