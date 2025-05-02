@@ -11,6 +11,7 @@ import Layout from "./layout.jsx";
 import Register from "./component/register.jsx";
 import Login from "./component/login.jsx";
 import Home from "./component/home.jsx";
+import Account from "./component/account.jsx";
 
 import ProtectedRoute from "./context/ProtectedRoute.jsx";
 import { AuthProvider } from "./context/AuthContext";
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
         children: [
           { path: "/", element: <App /> },
           { path: "home", element: <Home /> },
+          { path: "account", element: <Account /> },
         ],
       },
       { path: "register", element: <Register /> },
