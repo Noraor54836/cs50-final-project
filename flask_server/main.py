@@ -4,7 +4,7 @@ from flask_session import Session
 import mysql.connector
 from mysql.connector.pooling import MySQLConnectionPool
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from authen import login_required
 
@@ -146,6 +146,67 @@ def logout():
         return jsonify({"message": "Logout successful"}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 400
+
+
+@app.route("/getuserdata", methods=["POST"])
+def get_user_main():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    user_id = int(user_id) if user_id else None
+
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    connection = get_db_connection()
+
+    try:
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM account WHERE user_id = %s", (user_id,))
+        user_data = cursor.fetchone()
+
+        if not user_data:
+            return jsonify({"error": "User not found"}), 404
+
+        return jsonify({"data": user_data[0]}), 200
+    except mysql.connector.Error as err:
+        return jsonify({"error": str(err)}), 400
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.route("/setgoal", methods=["POST"])
+def update_goaldata():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    goal = data.get("goal")
+    start_date = data.get("start_date")
+    end_date = data.get("end_date")
+
+    user_id = int(user_id) if user_id else None
+
+    if not all([user_id, goal, start_date, end_date]):
+        return jsonify({"error": "required missing fields"}), 400
+
+    connection = get_db_connection()
+
+    start_dt = datetime.fromisoformat(start_date.replace("Z", "+00:00"))
+    end_dt = datetime.fromisoformat(end_date.replace("Z", "+00:00"))
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute(
+            "INSERT INTO account (goal, start_date, end_date, user_id) VALUES (%s, %s, %s, %s)",
+            (goal, start_dt, end_dt, user_id),
+        )
+        connection.commit()
+
+        return jsonify({"message": "Goal set successfully"}), 201
+    except mysql.connector.Error as err:
+        return jsonify({"error": str(err)}), 400
+    finally:
+        cursor.close()
+        connection.close()
 
 
 if __name__ == "__main__":
