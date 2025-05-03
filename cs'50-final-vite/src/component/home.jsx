@@ -15,14 +15,16 @@ function Home() {
     return <Navigate to="/login" replace />;
   }
 
-  const [usermain, setUsermain] = useState("");
+  const [userdata, setUserdata] = useState({});
+
+  const { goal, start_date, end_date } = userdata;
 
   useEffect(() => {
-    const getUsermain = async () => {
+    const getuserdata = async () => {
       console.log(user);
       try {
         const res = await axios.post(
-          `${backendUrl}/getUsermain`,
+          `${backendUrl}/getuserdata`,
           {
             userid: user,
           },
@@ -32,20 +34,20 @@ function Home() {
         );
 
         if (res.status === 200) {
-          setUsermain(res.data.main);
+          setUserdata(res.data.data);
         }
       } catch (err) {
-        setUsermain("");
+        console.error(err);
       }
     };
 
-    getUsermain();
+    getuserdata();
   }, []);
 
   return (
     <div className="container home">
       <div className="main_goal">
-        <StarBackground content="home" user={usermain} />
+        <StarBackground content="home" user={goal} />
       </div>
     </div>
   );
