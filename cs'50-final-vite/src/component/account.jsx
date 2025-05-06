@@ -1,23 +1,43 @@
 import React from "react";
 import { useState, useEffect, useMemo } from "react";
-import { useAuth } from "../context/AuthContext";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
+
+import PieAnimation from "./chart";
+
+import { useAuth } from "../context/AuthContext";
+import { useUserdata } from "../context/Userdata";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Account() {
   const { user, isLoggedIn } = useAuth();
+  const { Usermaindata, getuserdata } = useUserdata();
 
-  const [userdata, setUserdata] = useState({});
-  const { goal, start_date, end_date } = userdata;
+  const { goal, start_date, end_date } = Usermaindata;
+  console.log(Usermaindata);
 
   const localStart = useMemo(
-    () => (start_date ? new Date(start_date).toLocaleString() : ""),
+    () =>
+      start_date
+        ? new Date(start_date).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+        : "",
     [start_date]
   );
+
   const localEnd = useMemo(
-    () => (end_date ? new Date(end_date).toLocaleString() : ""),
+    () =>
+      end_date
+        ? new Date(end_date).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+        : "",
     [end_date]
   );
 
@@ -31,30 +51,6 @@ function Account() {
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
   }
-
-  const getuserdata = async () => {
-    try {
-      const res = await axios.post(
-        `${backendUrl}/getuserdata`,
-        {
-          userid: user,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(res);
-      if (res.status === 200) {
-        setUserdata(res.data.data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    getuserdata();
-  }, []);
 
   const sendgoal = async (e) => {
     e.preventDefault();
@@ -86,7 +82,8 @@ function Account() {
       );
 
       if (res.status === 201) {
-        getuserdata();
+        await getuserdata();
+        setFormerror("");
         setFormsuccess("Add goal successfully");
 
         setTimeout(() => {
@@ -96,7 +93,7 @@ function Account() {
       }
       console.log(res);
     } catch (err) {
-      console.error(err);
+      console.error(err, user, data);
     } finally {
       setGoalinput("");
       setStartDate("");
@@ -121,48 +118,58 @@ function Account() {
         ></div>
 
         <div className="set-goal-form">
-          <h1>Set your main goal</h1>
-          <input
-            type="text"
-            value={goalinput}
-            onChange={(e) => setGoalinput(e.target.value)}
-            placeholder="Enter your goal"
-            required
-          />
+          <h1>Your main goal</h1>
 
-          <label>Start date</label>
-          <input
-            type="datetime-local"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            required
-          />
+          <div className="goal-input-layout">
+            <input
+              type="text"
+              value={goalinput}
+              onChange={(e) => setGoalinput(e.target.value)}
+              placeholder="Enter your goal"
+              required
+            />
 
-          <label>End date</label>
-          <input
-            type="datetime-local"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            required
-          />
+            <div className="date-input-layout">
+              <label>Start date</label>
+              <input
+                type="datetime-local"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                required
+                style={{ order: "2" }}
+              />
 
-          <button className="btn" onClick={sendgoal}>
-            Submit
-          </button>
-          <button
-            className="btn"
-            onClick={() => {
-              setSetgoal(false);
-              setGoalinput("");
-              setStartDate("");
-              setEndDate("");
-              setFormerror("");
-            }}
-          >
-            Cancel
-          </button>
-          {formsuccess && <p>{formsuccess}</p>}
-          {formerror && <p>{formerror}</p>}
+              <label>End date</label>
+              <input
+                type="datetime-local"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+                style={{ order: "4" }}
+              />
+            </div>
+
+            <div className="account-button-layout">
+              <button className="btn submit" onClick={sendgoal}>
+                Submit
+              </button>
+              <button
+                className="btn cancel"
+                onClick={() => {
+                  setSetgoal(false);
+                  setGoalinput("");
+                  setStartDate("");
+                  setEndDate("");
+                  setFormerror("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+
+          {formsuccess && <p style={{ color: "#75a4f0" }}>{formsuccess}</p>}
+          {formerror && <p style={{ color: "#d55145" }}>{formerror}</p>}
         </div>
       </div>
     );
@@ -184,18 +191,47 @@ function Account() {
         </div>
 
         <div className="account-date">
-          {startDate ? (
-            <p>Start date: {localStart}</p>
-          ) : (
+          {start_date ? (
             <p>
-              <span onClick={() => setSetgoal(true)}>Set your start date</span>
+              Start date: <span style={{ color: "#d9e1e7" }}>{localStart}</span>
+            </p>
+          ) : (
+            <p className="p-set-your">
+              Set your
+              <span
+                className="outer-span-text"
+                data-replace="GOAL"
+                onClick={() => setSetgoal(true)}
+              >
+                {" "}
+                <span className="inner-span-text">end date</span>
+              </span>
             </p>
           )}
-          {endDate ? (
-            <p>End date: {localEnd}</p>
+
+          {start_date && end_date ? (
+            <div className="piechart">
+              <PieAnimation skipAnimation />
+            </div>
           ) : (
+            <h1 className="pie-chart-no-data">No data provided</h1>
+          )}
+
+          {end_date ? (
             <p>
-              <span onClick={() => setSetgoal(true)}>Set your end date</span>
+              End date: <span style={{ color: "#d9e1e7" }}> {localEnd} </span>
+            </p>
+          ) : (
+            <p className="p-set-your">
+              Set your
+              <span
+                className="outer-span-text"
+                data-replace="GOAL"
+                onClick={() => setSetgoal(true)}
+              >
+                {" "}
+                <span className="inner-span-text">end date</span>
+              </span>
             </p>
           )}
         </div>
