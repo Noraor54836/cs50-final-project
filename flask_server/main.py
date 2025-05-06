@@ -151,7 +151,7 @@ def logout():
 @app.route("/getuserdata", methods=["POST"])
 def get_user_main():
     data = request.get_json()
-    user_id = data.get("user_id")
+    user_id = data.get("userid")
     user_id = int(user_id) if user_id else None
 
     if not user_id:
@@ -167,7 +167,8 @@ def get_user_main():
         if not user_data:
             return jsonify({"error": "User not found"}), 404
 
-        return jsonify({"data": user_data[0]}), 200
+        print(user_data, "userdata")
+        return jsonify({"data": user_data}), 200
     except mysql.connector.Error as err:
         return jsonify({"error": str(err)}), 400
     finally:
@@ -178,15 +179,18 @@ def get_user_main():
 @app.route("/setgoal", methods=["POST"])
 def update_goaldata():
     data = request.get_json()
-    user_id = data.get("user_id")
-    goal = data.get("goal")
-    start_date = data.get("start_date")
-    end_date = data.get("end_date")
+    user_id = data.get("userid")
+    data_main = data.get("data")
+    goal = data_main.get("goal")
+    start_date = data_main.get("start_date")
+    end_date = data_main.get("end_date")
+
+    print(data, data_main)
 
     user_id = int(user_id) if user_id else None
 
     if not all([user_id, goal, start_date, end_date]):
-        return jsonify({"error": "required missing fields"}), 400
+        return jsonify({"error": "required missing fields"}), 401
 
     connection = get_db_connection()
 
@@ -196,7 +200,8 @@ def update_goaldata():
     try:
         cursor = connection.cursor()
         cursor.execute(
-            "INSERT INTO account (goal, start_date, end_date, user_id) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO account (goal, start_date, end_date, user_id) VALUES (%s, %s, %s, %s)"
+            "ON DUPLICATE KEY UPDATE goal = VALUES(goal), start_date = VALUES(start_date), end_date = VALUES(end_date)",
             (goal, start_dt, end_dt, user_id),
         )
         connection.commit()

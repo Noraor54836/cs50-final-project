@@ -15,13 +15,11 @@ function StarBackground(props) {
   const starAnimationtime = useRef(0);
   const textAnimationtime = useRef(0);
 
-  // Wait for 3 seconds before enabling hover animations
   useEffect(() => {
     const timer = setTimeout(() => setInitialAnimationDone(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Animation helpers
   const animateStar = (timeElapsed = 0) => {
     if (!starRef.current) return;
 

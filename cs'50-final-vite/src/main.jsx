@@ -15,6 +15,7 @@ import Account from "./component/account.jsx";
 
 import ProtectedRoute from "./context/ProtectedRoute.jsx";
 import { AuthProvider } from "./context/AuthContext";
+import { Userdataprovider } from "./context/Userdata.jsx";
 
 const router = createBrowserRouter([
   {
@@ -39,7 +40,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <Userdataprovider>
+        <RouterProvider router={router} />
+      </Userdataprovider>
     </AuthProvider>
   </StrictMode>
 );
