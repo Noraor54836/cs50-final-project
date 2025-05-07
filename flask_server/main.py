@@ -4,6 +4,8 @@ from flask_session import Session
 import mysql.connector
 from mysql.connector.pooling import MySQLConnectionPool
 
+import requests
+
 from datetime import timedelta, datetime
 
 from authen import login_required
@@ -212,6 +214,19 @@ def update_goaldata():
     finally:
         cursor.close()
         connection.close()
+
+
+@app.route("/randomquote", methods=["GET"])
+def random_quote():
+    try:
+        res = requests.get("https://zenquotes.io/api/random")
+        res.raise_for_status()
+        print(res.json())
+        return jsonify(res.json()), 200
+
+    except requests.RequestException as e:
+        print(e)
+        return jsonify({"error": "Failed to fetch quote"}), 500
 
 
 if __name__ == "__main__":
