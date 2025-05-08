@@ -1,17 +1,17 @@
 nav {
-  background-color: #191929;
+  background-color: #000415;
   color: white;
   display: flex;
   flex-direction: row;
-  gap: 1rem;
   height: 7rem;
   align-items: center;
+  justify-content: flex-end;
 
   a {
     color: white;
     text-decoration: none;
-    padding: 0rem 5rem;
-    font-size: 2.5rem;
+    padding: 0rem 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
   }
 }
@@ -27,6 +27,7 @@ nav {
 main {
   flex: 1;
   position: relative;
+  display: flex;
 }
 
 .container {
@@ -45,16 +46,9 @@ img {
 }
 
 .account_logo {
-  height: 7rem;
+  height: 5rem;
   margin-top: 1rem;
   overflow: hidden;
-}
-
-.home {
-  h1 {
-    font-size: 3rem;
-    margin: 0;
-  }
 }
 
 /* login page */
@@ -62,8 +56,10 @@ img {
 .login {
   background-color: rgb(242, 239, 239);
   height: 100vh;
+  width: 100%;
   display: flex;
   justify-content: start;
+  flex-shrink: 0;
 
   .login_layout {
     display: flex;
@@ -194,6 +190,7 @@ img {
 .register {
   background-color: rgb(242, 239, 239);
   height: 100vh;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -336,7 +333,13 @@ img {
   justify-content: start;
   align-items: start;
   width: 100%;
-  height: 100vh;
+  height: auto;
+  overflow: visible;
+
+  h1 {
+    font-size: 4rem;
+    margin: 0;
+  }
 
   .main_goal {
     display: flex;
@@ -344,18 +347,27 @@ img {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 25rem;
+    height: 40rem;
+  }
+
+  .improve-row-layout {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+    padding: 5rem 15rem 0rem 15rem;
+    box-sizing: border-box;
+    flex-shrink: 0;
   }
 
   .row-1-layout {
     display: flex;
     flex-direction: row;
-    justify-content: start;
-    align-items: center;
+    justify-content: center;
     width: 100%;
-    padding: 3rem 5rem;
+    padding: 3rem 15rem 3rem 15rem;
     box-sizing: border-box;
-    gap: 5rem;
+    gap: 3rem;
+    flex-shrink: 0;
 
     .clock_border {
       position: relative;
@@ -369,7 +381,7 @@ img {
       justify-content: center;
       align-items: center;
       width: 100%;
-      height: calc(100% - 5rem);
+      height: 100%;
 
       .layer {
         bottom: 0;
@@ -446,13 +458,26 @@ img {
       }
     }
   }
+
+  .row-2-layout {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 3rem 5rem;
+    box-sizing: border-box;
+    column-gap: 3rem;
+    flex-shrink: 0;
+  }
 }
 
 .clock {
-  width: 25rem;
-  height: 25rem;
+  width: 20rem;
+  height: 20rem;
   position: relative;
-  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   .clock-layout {
     border-radius: 50%;
@@ -518,69 +543,69 @@ img {
   /* Hour markers - positioned using trigonometry for perfect alignment */
   .twelve {
     transform: translateX(-50%) translateY(-50%) rotate(0deg)
-      translateX(calc(12.5rem - 20px));
+      translateX(calc(10rem - 20px));
   }
 
   .one {
     transform: translateX(-50%) translateY(-50%) rotate(30deg)
-      translateX(calc(12.5rem - 10px));
+      translateX(calc(10rem - 10px));
   }
 
   .two {
     transform: translateX(-50%) translateY(-50%) rotate(60deg)
-      translateX(calc(12.5rem - 10px));
+      translateX(calc(10rem - 10px));
   }
 
   .three {
     transform: translateX(-50%) translateY(-50%) rotate(90deg)
-      translateX(calc(12.5rem - 20px));
+      translateX(calc(10rem - 20px));
   }
 
   .four {
     transform: translateX(-50%) translateY(-50%) rotate(120deg)
-      translateX(calc(12.5rem - 10px));
+      translateX(calc(10rem - 10px));
   }
 
   .five {
     transform: translateX(-50%) translateY(-50%) rotate(150deg)
-      translateX(calc(12.5rem - 10px));
+      translateX(calc(10rem - 10px));
   }
 
   .six {
     transform: translateX(-50%) translateY(-50%) rotate(180deg)
-      translateX(calc(12.5rem - 20px));
+      translateX(calc(10rem - 20px));
   }
 
   .seven {
     transform: translateX(-50%) translateY(-50%) rotate(210deg)
-      translateX(calc(12.5rem - 10px));
+      translateX(calc(10rem - 10px));
   }
 
   .eight {
     transform: translateX(-50%) translateY(-50%) rotate(240deg)
-      translateX(calc(12.5rem - 10px));
+      translateX(calc(10rem - 10px));
   }
 
   .nine {
     transform: translateX(-50%) translateY(-50%) rotate(270deg)
-      translateX(calc(12.5rem - 20px));
+      translateX(calc(10rem - 20px));
   }
 
   .ten {
     transform: translateX(-50%) translateY(-50%) rotate(300deg)
-      translateX(calc(12.5rem - 10px));
+      translateX(calc(10rem - 10px));
   }
 
   .eleven {
     transform: translateX(-50%) translateY(-50%) rotate(330deg)
-      translateX(calc(12.5rem - 10px));
+      translateX(calc(10rem - 10px));
   }
 }
 
 /* account page */
 .account {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: 1fr 1fr 1fr;
   column-gap: 5rem;
   row-gap: 2.5rem;
   padding: 2.5rem;
@@ -742,6 +767,72 @@ img {
       }
     }
   }
+
+  .name-graph-box {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    grid-column-start: 2;
+    grid-column-end: 4;
+    width: 100%;
+    height: 100%;
+    gap: 2rem;
+
+    .account-name-skill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      background-color: #191929;
+      border-radius: 10px;
+      box-sizing: border-box;
+      padding: 10px;
+      gap: 1rem;
+      height: 30%;
+
+      h3 {
+        font-size: 2rem;
+        margin: 0;
+
+        span {
+          cursor: pointer;
+          transition: 0.5s;
+          color: #666;
+          position: relative;
+          display: inline-block;
+        }
+      }
+
+      .span-set-name::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffee10;
+        background-size: 100%;
+        background-repeat: repeat;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -moz-background-clip: text;
+        -moz-text-fill-color: transparent;
+        background-clip: text;
+        transition: 0.5s;
+        transform: scale(0.9);
+        z-index: -1;
+      }
+
+      .span-set-name:hover::before {
+        transform: scale(1.1);
+      }
+
+      .span-set-name:hover {
+        color: #ffee10;
+        text-shadow: 0 0 5px rgba(255, 238, 16, 0.5);
+      }
+    }
+  }
 }
 
 .container.set-goal {
@@ -872,6 +963,36 @@ img {
       }
     }
   }
+
+  .set-goal-form.name {
+    width: 40%;
+    height: fit-content;
+
+    h1 {
+      font-size: 5rem;
+      color: #d9e1e7;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 4rem;
+      color: #d9e1e7;
+      margin: 0;
+    }
+
+    input {
+      width: 100%;
+      font-size: 2rem;
+      padding: 10px;
+      border-radius: 15px;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    .btn {
+      box-shadow: 0px 5px 10px rgba(164, 162, 162, 0.1);
+    }
+  }
 }
 
 /* back ground  */
@@ -972,14 +1093,16 @@ img {
 }
 
 .gradient-text.home-text {
-  font-size: 6rem;
+  font-size: 8rem;
   animation: text-gradient-home 5s ease-in alternate infinite;
   background-image: linear-gradient(45deg, #ffffff, #f057deb7, #ef5cdeb7);
   background-size: 100%;
-  top: 2.5rem;
+  top: 15%;
 
   .account-link {
-    font-size: 6rem;
+    cursor: pointer;
+    margin-left: 5rem;
+    font-size: 10rem;
     --rotation: 20deg;
     animation: text-gradient-home 5s ease-in alternate infinite,
       rotateAngle 12s cubic-bezier(0.23, -0.01, 0.45, 1.06) infinite;

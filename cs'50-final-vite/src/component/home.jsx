@@ -14,12 +14,30 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function Home() {
   const { user, isLoggedIn } = useAuth();
   const { Usermaindata } = useUserdata();
+
   const [quote, setQuote] = useState({ text: "", author: "" });
   const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   const quoteRef = useRef(null);
   const isCalled = useRef(false);
   const layerRef = useRef(null);
+
+  const date = new Date();
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
@@ -112,6 +130,11 @@ function Home() {
       <div className="main_goal">
         <StarBackground content="home" user={goal} />
       </div>
+
+      <div className="improve-row-layout">
+        <h1> Improve yourself </h1>
+      </div>
+
       <div className="row-1-layout">
         <div className="clock_border">
           <Clock />
@@ -136,6 +159,14 @@ function Home() {
           >
             <h1> Get random quote </h1>
           </div>
+        </div>
+      </div>
+
+      <div className="row-2-layout">
+        <div className="date-now">
+          <h1>
+            {date.getDate()} {months[date.getMonth()]} {date.getFullYear()}
+          </h1>
         </div>
       </div>
     </div>
