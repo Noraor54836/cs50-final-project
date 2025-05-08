@@ -159,6 +159,9 @@ def get_user_main():
     if not user_id:
         return jsonify({"error": "User ID is required"}), 400
 
+    if user_id != session["user_id"]:
+        return jsonify({"error": "Unauthorized"}), 401
+
     connection = get_db_connection()
 
     try:
@@ -187,9 +190,10 @@ def update_goaldata():
     start_date = data_main.get("start_date")
     end_date = data_main.get("end_date")
 
-    print(data, data_main)
-
     user_id = int(user_id) if user_id else None
+
+    if user_id != session["user_id"]:
+        return jsonify({"error": "Unauthorized"}), 401
 
     if not all([user_id, goal, start_date, end_date]):
         return jsonify({"error": "required missing fields"}), 401
@@ -209,6 +213,40 @@ def update_goaldata():
         connection.commit()
 
         return jsonify({"message": "Goal set successfully"}), 201
+    except mysql.connector.Error as err:
+        return jsonify({"error": str(err)}), 400
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.route("/setname", methods=["POST"])
+def update_namedata():
+    data = request.get_json()
+    user_id = data.get("userid")
+    name = data.get("name")
+    skill = data.get("skill")
+
+    user_id = int(user_id) if user_id else None
+
+    if user_id != session["user_id"]:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not all([user_id, name, skill]):
+        return jsonify({"error": "required missing fields"}), 401
+
+    connection = get_db_connection()
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute(
+            "INSERT INTO account (name, skill, user_id) VALUES (%s, %s, %s)"
+            "ON DUPLICATE KEY UPDATE name = VALUES(name), skill = VALUES(skill)",
+            (name, skill, user_id),
+        )
+        connection.commit()
+
+        return jsonify({"message": "Name set successfully"}), 201
     except mysql.connector.Error as err:
         return jsonify({"error": str(err)}), 400
     finally:

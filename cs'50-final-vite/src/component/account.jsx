@@ -14,8 +14,7 @@ function Account() {
   const { user, isLoggedIn } = useAuth();
   const { Usermaindata, getuserdata } = useUserdata();
 
-  const { goal, start_date, end_date } = Usermaindata;
-  console.log(Usermaindata);
+  const { goal, start_date, end_date, name, skill } = Usermaindata;
 
   const localStart = useMemo(
     () =>
@@ -47,6 +46,12 @@ function Account() {
   const [endDate, setEndDate] = useState("");
   const [formerror, setFormerror] = useState("");
   const [formsuccess, setFormsuccess] = useState("");
+
+  const [nameform, setNameform] = useState(false);
+  const [nameinput, setNameinput] = useState("");
+  const [skillinput, setSkillinput] = useState("");
+  const [nameerror, setNameerror] = useState("");
+  const [namesuccess, setNamesuccess] = useState("");
 
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
@@ -99,6 +104,47 @@ function Account() {
       setStartDate("");
       setEndDate("");
       setFormerror("");
+    }
+  };
+
+  const sendname = async (e) => {
+    e.preventDefault();
+
+    if (!nameinput || !skillinput) {
+      setNameerror("Please fill in all fields");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        `${backendUrl}/setname`,
+        {
+          userid: user,
+          name: nameinput,
+          skill: skillinput,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (res.status === 201) {
+        console.log(res);
+        await getuserdata();
+        setNameerror("");
+        setNamesuccess("Add name successfully");
+
+        setTimeout(() => {
+          setNameform(false);
+          setNamesuccess("");
+        }, 1500);
+      }
+    } catch (err) {
+      console.error(err, user, nameinput, skillinput);
+    } finally {
+      setNameinput("");
+      setSkillinput("");
+      setNameerror("");
     }
   };
 
@@ -175,6 +221,68 @@ function Account() {
     );
   };
 
+  const setname_form = () => {
+    return (
+      <div className="container set-goal">
+        <div
+          className="set-goal-bg"
+          onClick={(e) => {
+            e.stopPropagation();
+            setNameform(false);
+            setNameinput("");
+            setSkillinput("");
+            setNameerror("");
+            setNamesuccess("");
+          }}
+        ></div>
+
+        <div className="set-goal-form name">
+          <h1>Set your name</h1>
+
+          <div className="goal-input-layout">
+            <input
+              type="text"
+              value={nameinput}
+              onChange={(e) => setNameinput(e.target.value)}
+              placeholder="Enter your name"
+              required
+            />
+
+            <h2>Set your goal skill</h2>
+            <input
+              type="text"
+              value={skillinput}
+              onChange={(e) => setSkillinput(e.target.value)}
+              placeholder="Enter your goal skill"
+              required
+            />
+
+            <div className="account-button-layout">
+              <button className="btn submit" onClick={sendname}>
+                Submit
+              </button>
+              <button
+                className="btn cancel"
+                onClick={() => {
+                  setNameform(false);
+                  setNameinput("");
+                  setSkillinput("");
+                  setNameerror("");
+                  setNamesuccess("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+
+            {namesuccess && <p style={{ color: "#75a4f0" }}>{namesuccess}</p>}
+            {nameerror && <p style={{ color: "#d55145" }}>{nameerror}</p>}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="container account">
@@ -235,8 +343,39 @@ function Account() {
             </p>
           )}
         </div>
+
+        <div className="name-graph-box">
+          <div className="account-name-skill">
+            {name ? (
+              <h3> {name} </h3>
+            ) : (
+              <h3>
+                <span
+                  className="span-set-name"
+                  onClick={() => setNameform(true)}
+                >
+                  Set your name
+                </span>
+              </h3>
+            )}
+
+            {skill ? (
+              <h3> {skill} </h3>
+            ) : (
+              <h3>
+                <span
+                  className="span-set-name"
+                  onClick={() => setNameform(true)}
+                >
+                  Set your goal skill
+                </span>
+              </h3>
+            )}
+          </div>
+        </div>
       </div>
 
+      {nameform && setname_form()}
       {setgoal && setmaingoal_form()}
     </>
   );

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useUserdata } from "../context/Userdata";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -10,6 +11,7 @@ function Logout({ shown, setShown }) {
   const navigate = useNavigate();
   const [status, setStatus] = useState("");
   const { checkLogin } = useAuth();
+  const { setUsermaindata } = useUserdata();
 
   if (shown === false) {
     return null;
@@ -24,6 +26,7 @@ function Logout({ shown, setShown }) {
       });
 
       if (res.status === 200) {
+        setUsermaindata({});
         setStatus("Logout successful");
         console.log("Logout successful");
 
