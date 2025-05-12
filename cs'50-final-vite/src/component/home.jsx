@@ -19,7 +19,7 @@ function Home() {
   const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [timeSpent, setTimeSpent] = useState("00:00:00");
+  const [timeSpent, setTimeSpent] = useState(0);
 
   const quoteRef = useRef(null);
   const isCalled = useRef(false);
@@ -101,9 +101,29 @@ function Home() {
 
   const handleToggle = () => {
     setIsChecked(!isChecked);
-    // Reset time when toggled
-    setTimeSpent(isChecked ? "00:00:00" : "00:00:01");
   };
+
+  const formattime = (time) => {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    if (isChecked) {
+      const interval = setInterval(() => {
+        setTimeSpent((prevTime) => prevTime + 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    } else {
+      setTimeout(() => {
+        setTimeSpent(0);
+      }, 3000);
+    }
+  }, [isChecked, timeSpent]);
 
   useEffect(() => {
     const layer = layerRef.current;
@@ -223,7 +243,7 @@ function Home() {
               </h1>
             </div>
             <div className="time-spent-number">
-              <span>{timeSpent}</span>
+              <span>{formattime(timeSpent)}</span>
             </div>
           </div>
         </div>
