@@ -209,7 +209,17 @@ function Home() {
             <div className={`time-spent-title ${isChecked ? "active" : ""}`}>
               <h1>
                 {" "}
-                Time <span>{isChecked ? "Start" : "Stop"}</span>
+                Time{" "}
+                <span
+                  className={`time-slide spend ${isChecked ? "active" : ""}`}
+                >
+                  spend
+                </span>{" "}
+                <span
+                  className={`time-slide stop ${!isChecked ? "active" : ""}`}
+                >
+                  stop
+                </span>
               </h1>
             </div>
             <div className="time-spent-number">

@@ -497,7 +497,7 @@ img {
             position: relative;
             width: 12rem;
             height: 5rem;
-            top: 52%;
+            top: 59%;
             cursor: pointer;
             display: inline-block;
             padding: 5px;
@@ -516,7 +516,7 @@ img {
             text-transform: uppercase;
             position: absolute;
             left: 49%;
-            top: -65%;
+            top: -85%;
             transform: translate(-50%, -50%);
             z-index: 1;
             font-family: sans-serif;
@@ -651,26 +651,55 @@ img {
           position: absolute;
           box-sizing: border-box;
           top: -18%;
-          transition: ease-in-out 0.9s cubic-bezier(0.44, 0, 0.5, 1);
 
           h1 {
             margin: 0;
+            position: relative;
             font-size: 8rem;
             font-weight: 400;
             color: #2a2a2a;
             font-family: sans-serif;
-            transition: all 0.9s cubic-bezier(0.44, 0, 0.5, 1);
+            background: linear-gradient(to right, #2f80ed 50%, transparent 50%);
+            background-position: right;
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-stroke-color: #fff9f9;
             -webkit-text-stroke-width: 1px;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.48s ease-in-out;
           }
         }
 
         .time-spent-title.active h1 {
-          color: #2f80ed;
+          background-position: left;
+        }
 
-          span {
-            right: -100%;
-          }
+        h1 .time-slide {
+          position: relative;
+        }
+
+        h1 .time-slide.spend {
+          bottom: 10rem;
+          -webkit-text-fill-color: #2f80ed;
+          transition: all 0.7s cubic-bezier(0.5, 1, 0.5, 0.72);
+        }
+
+        h1 .time-slide.spend.active {
+          bottom: 0;
+          transition: all 0.35s cubic-bezier(0.75, 0, 0.5, 0.9);
+        }
+
+        h1 .time-slide.stop {
+          position: absolute;
+          right: -18rem;
+          transition: all 0.3s cubic-bezier(0.35, 0.9, 1, 0.9);
+        }
+
+        h1 .time-slide.stop.active {
+          position: absolute;
+          right: 16%;
+          transition: all 0.7s cubic-bezier(0.8, 0, 0.4, 0.72);
         }
 
         .time-spent-number {
@@ -763,7 +792,6 @@ img {
     transition-timing-function: cubic-bezier(0.1, 2.5, 0.55, 1);
   }
 
-  /* Hour markers - positioned using trigonometry for perfect alignment */
   .twelve {
     transform: translateX(-50%) translateY(-50%) rotate(0deg)
       translateX(calc(10rem - 20px));
