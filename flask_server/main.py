@@ -267,5 +267,23 @@ def random_quote():
         return jsonify({"error": "Failed to fetch quote"}), 500
 
 
+@app.route("/recordtime", methods=["POST"])
+def record_time():
+    data = request.get_json()
+    user_id = data.get("userid")
+    time = data.get("time")
+
+    user_id = int(user_id) if user_id else None
+    time = int(time) if time else None
+
+    if user_id != session["user_id"]:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not all([user_id, time]):
+        return jsonify({"error": "required missing fields"}), 401
+
+    connection = get_db_connection()
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5001)

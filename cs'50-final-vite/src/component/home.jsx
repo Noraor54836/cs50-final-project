@@ -21,6 +21,9 @@ function Home() {
   const [isChecked, setIsChecked] = useState(false);
   const [timeSpent, setTimeSpent] = useState(0);
 
+  const [checkin, setCheckin] = useState({ date: "", time: "" });
+  const [checkout, setCheckout] = useState({ date: "", time: "" });
+
   const quoteRef = useRef(null);
   const isCalled = useRef(false);
   const layerRef = useRef(null);
@@ -112,8 +115,44 @@ function Home() {
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  const handleCheckin_out = (checkstatus) => {
+    const date = new Date();
+    const isodate = date.toISOString();
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+
+    const dateshown = `${day.toString().padStart(2, "0")}/${month
+      .toString()
+      .padStart(2, "0")}/${year}
+    `;
+
+    const timeshown = `${hour.toString().padStart(2, "0")}:${minute
+      .toString()
+      .padStart(2, "0")}:${second.toString().padStart(2, "0")}`;
+
+    if (checkstatus === true) {
+      setCheckin({
+        date: dateshown,
+        time: timeshown,
+      });
+    } else {
+      setCheckout({
+        date: dateshown,
+        time: timeshown,
+      });
+    }
+  };
+
   useEffect(() => {
     if (isChecked) {
+      if (timeSpent === 0) {
+        handleCheckin_out(true);
+      }
+
       const interval = setInterval(() => {
         setTimeSpent((prevTime) => prevTime + 1);
       }, 1000);
@@ -243,9 +282,43 @@ function Home() {
               </h1>
             </div>
             <div className="time-spent-number">
-              <span>{formattime(timeSpent)}</span>
+              <span className={isChecked ? "active" : ""}>
+                {formattime(timeSpent)}
+              </span>
             </div>
           </div>
+        </div>
+
+        <div className="check-time-mark">
+          <table>
+            <tr>
+              <th>Time Start</th>
+              <th>Time Stop</th>
+            </tr>
+
+            <tr>
+              <td>
+                {checkin.date === "" || checkin.time === "" ? (
+                  <p>Check-in for start</p>
+                ) : (
+                  <>
+                    <p>Check-in Date: {checkin.date}</p>
+                    <p>Check-in Time: {checkin.time}</p>
+                  </>
+                )}
+              </td>
+              <td>
+                {checkout.date === "" || checkout.time === "" ? (
+                  <p>Check-out for stop</p>
+                ) : (
+                  <>
+                    <p>Check-out Date: {checkout.date}</p>
+                    <p>Check-out Time: {checkout.time}</p>
+                  </>
+                )}
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
