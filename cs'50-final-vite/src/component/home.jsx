@@ -139,11 +139,45 @@ function Home() {
         date: dateshown,
         time: timeshown,
       });
+
+      try {
+        const res = axios.post(
+          `${backendUrl}/recordtime`,
+          {
+            userid: user,
+            checkin: isodate,
+            checkout: null,
+            status: true,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       setCheckout({
         date: dateshown,
         time: timeshown,
       });
+
+      try {
+        const res = axios.post(
+          `${backendUrl}/recordtime`,
+          {
+            userid: user,
+            checkin: checkin,
+            checkout: isodate,
+            status: false,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -158,6 +192,9 @@ function Home() {
       }, 1000);
       return () => clearInterval(interval);
     } else {
+      if (timeSpent > 59) {
+        handleCheckin_out(false);
+      }
       setTimeout(() => {
         setTimeSpent(0);
       }, 3000);
