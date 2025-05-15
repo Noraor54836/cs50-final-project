@@ -267,22 +267,89 @@ def random_quote():
         return jsonify({"error": "Failed to fetch quote"}), 500
 
 
-@app.route("/recordtime", methods=["POST"])
-def record_time():
+@app.route("/gethistory", methods=["POST"])
+def get_history():
     data = request.get_json()
     user_id = data.get("userid")
-    time = data.get("time")
 
     user_id = int(user_id) if user_id else None
-    time = int(time) if time else None
 
     if user_id != session["user_id"]:
         return jsonify({"error": "Unauthorized"}), 401
 
-    if not all([user_id, time]):
+    connection = get_db_connection()
+
+    try:
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT checkin, checkout, timespend FROM history WHERE user_id = %s",
+            (user_id,),
+        )
+        history = cursor.fetchall()
+
+        return jsonify({"data": history}), 200
+    except mysql.connector.Error as err:
+        return jsonify({"error": str(err)}), 400
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.route("/recordtime", methods=["POST"])
+def record_time():
+    data = request.get_json()
+    user_id = data.get("userid")
+    checkin = data.get("checkin")
+    checkout = data.get("checkout")
+    status = data.get("status")
+
+    user_id = int(user_id) if user_id else None
+
+    if user_id != session["user_id"]:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not all([user_id, status, checkin]):
         return jsonify({"error": "required missing fields"}), 401
 
     connection = get_db_connection()
+
+    if status == True and checkout == None:
+        checkin = datetime.fromisoformat(checkin.replace("Z", "+00:00"))
+
+        try:
+            cursor = connection.cursor()
+            cursor.execute(
+                "INSERT INTO history (checkin, chekout, user_id) VALUES (%s, %s, %s)",
+                (checkin, None, user_id),
+            )
+            history_id = cursor.lastrowid
+            connection.commit()
+            session["history_id"] = history_id
+            return jsonify({"message": "Time recorded successfully"}), 201
+        except mysql.connector.Error as err:
+            return jsonify({"error": str(err)}), 400
+        finally:
+            cursor.close()
+            connection.close()
+    elif status == False and checkout != None:
+        checkin = datetime.fromisoformat(checkin.replace("Z", "+00:00"))
+        checkout = datetime.fromisoformat(checkout.replace("Z", "+00:00"))
+
+        try:
+            cursor = connection.cursor()
+            cursor.execute(
+                "UPDATE history SET checkout = %s WHERE history_id = %s",
+                (checkout, session["history_id"]),
+            )
+            connection.commit()
+
+            session.pop("history_id", None)
+            return jsonify({"message": "Time recorded successfully"}), 201
+        except mysql.connector.Error as err:
+            return jsonify({"error": str(err)}), 400
+        finally:
+            cursor.close()
+            connection.close()
 
 
 if __name__ == "__main__":
