@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link, Navigate, useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Home() {
   const { user, isLoggedIn } = useAuth();
-  const { Usermaindata } = useUserdata();
+  const { Usermaindata, Usercache } = useUserdata();
 
   const [quote, setQuote] = useState({ text: "", author: "" });
   const [isHovered, setIsHovered] = useState(false);
@@ -24,6 +24,9 @@ function Home() {
   const [checkin, setCheckin] = useState({ date: "", time: "" });
   const [checkout, setCheckout] = useState({ date: "", time: "" });
 
+  const timeSpentRef = useRef(0);
+
+  const checkinRef = useRef(null);
   const quoteRef = useRef(null);
   const isCalled = useRef(false);
   const layerRef = useRef(null);
@@ -76,6 +79,34 @@ function Home() {
   };
 
   useEffect(() => {
+    console.log("check cache", Usercache);
+    const checkCache = async () => {
+      if (Usercache) {
+        console.log("Checking Usercache", Usercache);
+        const { checkin, checkout } = Usercache;
+
+        if (checkout === null) {
+          const checkinDate = new Date(checkin);
+          checkinRef.current = checkinDate.toISOString();
+          const now = new Date();
+          const spentTime = Math.floor((now - checkinDate) / 1000);
+
+          setCheckin({
+            date: checkinDate.toLocaleDateString("en-GB"),
+            time: checkinDate.toLocaleTimeString("en-GB"),
+          });
+
+          setTimeSpent(spentTime);
+          timeSpentRef.current = spentTime;
+          setIsChecked(true);
+        }
+      }
+    };
+
+    checkCache();
+  }, [Usercache]);
+
+  useEffect(() => {
     const loadInitialQuote = async () => {
       const newQuote = await Random_quote();
       if (newQuote) {
@@ -102,9 +133,37 @@ function Home() {
     }
   };
 
-  const handleToggle = () => {
-    setIsChecked(!isChecked);
+  const handleToggle = (status) => {
+    if (status === true && timeSpent === 0) {
+      setIsChecked(true);
+    } else if (status === false && timeSpent > 10) {
+      setIsChecked(false);
+    }
   };
+
+  // useEffect(() => {
+  //   console.log("isChecked test", isChecked, timeSpent);
+  // }, [isChecked, timeSpent]);
+
+  useEffect(() => {
+    if (isChecked) {
+      if (timeSpent === 0) {
+        handleCheckin_out(true);
+      }
+      let interval;
+
+      interval = setInterval(() => {
+        timeSpentRef.current += 1;
+        setTimeSpent(timeSpentRef.current);
+      }, 1000);
+
+      return () => clearInterval(interval);
+    } else if (!isChecked) {
+      if (timeSpent > 0) {
+        handleCheckin_out(false);
+      }
+    }
+  }, [isChecked]);
 
   const formattime = (time) => {
     const hours = Math.floor(time / 3600);
@@ -115,7 +174,7 @@ function Home() {
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  const handleCheckin_out = (checkstatus) => {
+  const handleCheckin_out = async (checkstatus) => {
     const date = new Date();
     const isodate = date.toISOString();
     const day = date.getDate();
@@ -140,8 +199,10 @@ function Home() {
         time: timeshown,
       });
 
+      checkinRef.current = isodate;
+
       try {
-        const res = axios.post(
+        const res = await axios.post(
           `${backendUrl}/recordtime`,
           {
             userid: user,
@@ -163,11 +224,11 @@ function Home() {
       });
 
       try {
-        const res = axios.post(
+        const res = await axios.post(
           `${backendUrl}/recordtime`,
           {
             userid: user,
-            checkin: checkin,
+            checkin: checkinRef.current,
             checkout: isodate,
             status: false,
           },
@@ -175,31 +236,19 @@ function Home() {
             withCredentials: true,
           }
         );
+
+        if (res.status === 201) {
+          setTimeout(() => {
+            setTimeSpent(0), (timeSpentRef.current = 0);
+            setCheckin({ date: "", time: "" });
+            setCheckout({ date: "", time: "" });
+          }, 3000);
+        }
       } catch (err) {
         console.log(err);
       }
     }
   };
-
-  useEffect(() => {
-    if (isChecked) {
-      if (timeSpent === 0) {
-        handleCheckin_out(true);
-      }
-
-      const interval = setInterval(() => {
-        setTimeSpent((prevTime) => prevTime + 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    } else {
-      if (timeSpent > 59) {
-        handleCheckin_out(false);
-      }
-      setTimeout(() => {
-        setTimeSpent(0);
-      }, 3000);
-    }
-  }, [isChecked, timeSpent]);
 
   useEffect(() => {
     const layer = layerRef.current;
@@ -274,22 +323,23 @@ function Home() {
         </div>
 
         <div className="check-in-layout">
-          <div className="check-in">
+          <div className={`check-in ${isChecked ? "active" : ""}`}>
             <div className="switch">
-              <label for="toggle" class="toggle-label">
+              <label htmlFor="toggle" className="toggle-label">
                 <input
-                  class="circle"
+                  className="circle"
                   id="toggle"
                   name="toggle"
                   type="checkbox"
-                  onChange={handleToggle}
+                  checked={isChecked}
+                  onChange={() => handleToggle(!isChecked)}
                 />
 
-                <span class="slider">
-                  <div class="star_button star_1"></div>
-                  <div class="star_button star_2"></div>
-                  <div class="star_button star_3"></div>
-                  <svg viewBox="0 0 16 16" class="cloud_1 cloud">
+                <span className="slider">
+                  <div className="star_button star_1"></div>
+                  <div className="star_button star_2"></div>
+                  <div className="star_button star_3"></div>
+                  <svg viewBox="0 0 16 16" className="cloud_1 cloud">
                     <path
                       transform="matrix(.77976 0 0 .78395-299.99-418.63)"
                       fill="#fff"
@@ -328,33 +378,37 @@ function Home() {
 
         <div className="check-time-mark">
           <table>
-            <tr>
-              <th>Time Start</th>
-              <th>Time Stop</th>
-            </tr>
+            <thead>
+              <tr>
+                <th>Time Start</th>
+                <th>Time Stop</th>
+              </tr>
+            </thead>
 
-            <tr>
-              <td>
-                {checkin.date === "" || checkin.time === "" ? (
-                  <p>Check-in for start</p>
-                ) : (
-                  <>
-                    <p>Check-in Date: {checkin.date}</p>
-                    <p>Check-in Time: {checkin.time}</p>
-                  </>
-                )}
-              </td>
-              <td>
-                {checkout.date === "" || checkout.time === "" ? (
-                  <p>Check-out for stop</p>
-                ) : (
-                  <>
-                    <p>Check-out Date: {checkout.date}</p>
-                    <p>Check-out Time: {checkout.time}</p>
-                  </>
-                )}
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td>
+                  {checkin.date === "" || checkin.time === "" ? (
+                    <p>Check-in for start</p>
+                  ) : (
+                    <>
+                      <p>Check-in Date: {checkin.date}</p>
+                      <p>Check-in Time: {checkin.time}</p>
+                    </>
+                  )}
+                </td>
+                <td>
+                  {checkout.date === "" || checkout.time === "" ? (
+                    <p>Check-out for stop</p>
+                  ) : (
+                    <>
+                      <p>Check-out Date: {checkout.date}</p>
+                      <p>Check-out Time: {checkout.time}</p>
+                    </>
+                  )}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>

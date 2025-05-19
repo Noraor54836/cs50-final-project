@@ -5,7 +5,8 @@ import { useUserdata } from "./Userdata";
 
 const ProtectedRoute = () => {
   const { isLoggedIn, checkLogin } = useAuth();
-  const { Usermaindata, getuserdata } = useUserdata();
+  const { Usermaindata, getuserdata, getusercache, getuserhistory } =
+    useUserdata();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
@@ -22,6 +23,8 @@ const ProtectedRoute = () => {
     console.log("ProtectedRoute useEffect check data");
     if (isLoggedIn && !isChecking) {
       getuserdata();
+      getuserhistory();
+      getusercache();
       console.log("ProtectedRoute useEffect passed", isChecking, isLoggedIn);
     }
   }, [isLoggedIn, isChecking]);

@@ -259,11 +259,9 @@ def random_quote():
     try:
         res = requests.get("https://zenquotes.io/api/random")
         res.raise_for_status()
-        print(res.json())
         return jsonify(res.json()), 200
 
     except requests.RequestException as e:
-        print(e)
         return jsonify({"error": "Failed to fetch quote"}), 500
 
 
@@ -286,6 +284,7 @@ def get_history():
             (user_id,),
         )
         history = cursor.fetchall()
+        print(history, "history data")
 
         return jsonify({"data": history}), 200
     except mysql.connector.Error as err:
@@ -293,6 +292,38 @@ def get_history():
     finally:
         cursor.close()
         connection.close()
+
+
+@app.route("/getcache", methods=["POST"])
+def get_cache():
+    data = request.get_json()
+    user_id = data.get("userid")
+
+    user_id = int(user_id) if user_id else None
+
+    if user_id != session["user_id"]:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if session.get("history_id") is not None:
+        history_id = session.get("history_id")
+
+        connection = get_db_connection()
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute(
+                "SELECT checkin, checkout, timespend FROM history WHERE history_id = %s AND user_id = %s",
+                (history_id, user_id),
+            )
+            history = cursor.fetchone()
+
+            return jsonify({"data": history}), 200
+        except mysql.connector.Error as err:
+            return jsonify({"error": str(err)}), 400
+        finally:
+            cursor.close()
+            connection.close()
+    else:
+        return jsonify({"data": None}), 200
 
 
 @app.route("/recordtime", methods=["POST"])
@@ -308,8 +339,8 @@ def record_time():
     if user_id != session["user_id"]:
         return jsonify({"error": "Unauthorized"}), 401
 
-    if not all([user_id, status, checkin]):
-        return jsonify({"error": "required missing fields"}), 401
+    if not all([user_id, checkin]):
+        return jsonify({"error": "required missing fields"}), 402
 
     connection = get_db_connection()
 
@@ -319,12 +350,14 @@ def record_time():
         try:
             cursor = connection.cursor()
             cursor.execute(
-                "INSERT INTO history (checkin, chekout, user_id) VALUES (%s, %s, %s)",
+                "INSERT INTO history (checkin, checkout, user_id) VALUES (%s, %s, %s)",
                 (checkin, None, user_id),
             )
             history_id = cursor.lastrowid
             connection.commit()
             session["history_id"] = history_id
+            print("history_id in", session["history_id"], session)
+
             return jsonify({"message": "Time recorded successfully"}), 201
         except mysql.connector.Error as err:
             return jsonify({"error": str(err)}), 400
@@ -335,15 +368,20 @@ def record_time():
         checkin = datetime.fromisoformat(checkin.replace("Z", "+00:00"))
         checkout = datetime.fromisoformat(checkout.replace("Z", "+00:00"))
 
+        timespend = checkout - checkin
+        timespend = timespend.total_seconds()
+
         try:
             cursor = connection.cursor()
             cursor.execute(
-                "UPDATE history SET checkout = %s WHERE history_id = %s",
-                (checkout, session["history_id"]),
+                "UPDATE history SET checkout = %s , timespend = %s WHERE history_id = %s",
+                (checkout, timespend, session["history_id"]),
             )
             connection.commit()
 
             session.pop("history_id", None)
+
+            print("history_id out", session)
             return jsonify({"message": "Time recorded successfully"}), 201
         except mysql.connector.Error as err:
             return jsonify({"error": str(err)}), 400
