@@ -49,7 +49,7 @@ export const Userdataprovider = ({ children }) => {
       );
 
       if (res.status === 200) {
-        console.log(res.data.data);
+        console.log(res.data.data, "userhistory");
         setUserhistory(res.data.data);
       }
     } catch (err) {
@@ -70,7 +70,7 @@ export const Userdataprovider = ({ children }) => {
       );
 
       if (res.status === 200) {
-        console.log(res.data.data);
+        console.log(res.data.data, "usercache");
         setUsercache(res.data.data);
       }
     } catch (err) {

@@ -775,6 +775,11 @@ img {
       td:last-child {
         border-bottom-right-radius: 10px;
       }
+
+      p {
+        font-size: 2rem;
+        margin: 0;
+      }
     }
   }
 }
