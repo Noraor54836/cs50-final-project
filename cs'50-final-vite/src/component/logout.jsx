@@ -42,6 +42,7 @@ function Logout({ shown, setShown }) {
           setShown(false);
           setStatus("");
           setError("");
+          window.location.reload();
           console.log("Redirecting to home", window.location.pathname);
           navigate("/login", { replace: true });
         }, 1500);
