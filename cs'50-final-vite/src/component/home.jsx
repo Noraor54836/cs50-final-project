@@ -13,7 +13,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Home() {
   const { user, isLoggedIn } = useAuth();
-  const { Usermaindata, Usercache } = useUserdata();
+  const { Usermaindata, Usercache, getuserhistory } = useUserdata();
 
   const [quote, setQuote] = useState({ text: "", author: "" });
   const [isHovered, setIsHovered] = useState(false);
@@ -238,6 +238,8 @@ function Home() {
         );
 
         if (res.status === 201) {
+          getuserhistory();
+
           setTimeout(() => {
             setTimeSpent(0), (timeSpentRef.current = 0);
             setCheckin({ date: "", time: "" });

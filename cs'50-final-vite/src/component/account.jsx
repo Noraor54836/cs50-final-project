@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import PieAnimation from "./chart";
+import LineChart from "./line";
 
 import { useAuth } from "../context/AuthContext";
 import { useUserdata } from "../context/Userdata";
@@ -347,7 +348,10 @@ function Account() {
         <div className="name-graph-box">
           <div className="account-name-skill">
             {name ? (
-              <h3> {name} </h3>
+              <h3>
+                {" "}
+                Hi, <span className="skill-name">{name}</span>{" "}
+              </h3>
             ) : (
               <h3>
                 <span
@@ -360,7 +364,12 @@ function Account() {
             )}
 
             {skill ? (
-              <h3> {skill} </h3>
+              <h3>
+                {" "}
+                your goal skill is <span className="skill-name">
+                  {skill}
+                </span>{" "}
+              </h3>
             ) : (
               <h3>
                 <span
@@ -371,6 +380,10 @@ function Account() {
                 </span>
               </h3>
             )}
+          </div>
+
+          <div>
+            <LineChart />
           </div>
         </div>
       </div>
