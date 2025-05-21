@@ -28,7 +28,13 @@ function Navbar() {
       <>
         <nav>
           <Link to="/">Home</Link>
-          <Link onClick={() => setLogout_Component(true)}> Logout </Link>
+          <span
+            className="logout_nav"
+            onClick={() => setLogout_Component(true)}
+            style={{ cursor: "pointer" }}
+          >
+            Logout
+          </span>
           <Link to="/account">
             <AccountIcon />
           </Link>

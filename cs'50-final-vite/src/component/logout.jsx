@@ -10,12 +10,19 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function Logout({ shown, setShown }) {
   const navigate = useNavigate();
   const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
   const { checkLogin } = useAuth();
   const { setUsermaindata } = useUserdata();
 
   if (shown === false) {
     return null;
   }
+
+  const handleClose = () => {
+    setShown(false);
+    setStatus("");
+    setError("");
+  };
 
   const handleLogoutbutton = async () => {
     setStatus("Logging out...");
@@ -33,21 +40,23 @@ function Logout({ shown, setShown }) {
         setTimeout(() => {
           checkLogin();
           setShown(false);
+          setStatus("");
+          setError("");
           console.log("Redirecting to home", window.location.pathname);
           navigate("/login", { replace: true });
         }, 1500);
       }
     } catch (err) {
       console.error("Error:", err);
-      setStatus("Logout failed. Please try again.");
+      setError("Logout failed. Please try again.");
     }
   };
 
   return (
-    <div className="back-screen" onClick={() => setShown(false)}>
-      <div className="logout container">
-        <h1>Logout</h1>
-        <h3> Sure to logout? </h3>
+    <div className="logout">
+      <div className="back-screen" onClick={() => handleClose()}></div>
+      <div className="logout_container">
+        <h3> logout? </h3>
 
         <div className="button_group">
           <button
@@ -56,12 +65,16 @@ function Logout({ shown, setShown }) {
           >
             Logout
           </button>
-          <button className="cancel_button" onClick={() => setShown(false)}>
+          <button
+            className="logout_button cancel"
+            onClick={() => handleClose()}
+          >
             Cancel
           </button>
         </div>
 
-        {status && <p>{status}</p>}
+        {status && <p className="logout_status">{status}</p>}
+        {error && <p className="logout_error">{error}</p>}
       </div>
     </div>
   );
