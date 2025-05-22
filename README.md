@@ -1,6 +1,8 @@
 # Productivity Web App with React, Flask, and MySQL
 
-## VIDEO URL
+## VIDEO URL:
+
+    [Watch Video](https://youtu.be/SHaJFgqqUHU)
 
 ## Description
 
