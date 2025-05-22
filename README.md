@@ -7,9 +7,7 @@
 ## Description
 
 This is a full-stack productivity web application built with React (frontend), Flask (backend), and MySQL (database).  
-The platform allows users to track their goals, time spent, and personal skills to improve focus and time management.
-
-## Features
+The platform allows users to track their goals, time spent, and personal skills to improve focus and time management. All of Features are
 
 1. **User Authentication**
 
