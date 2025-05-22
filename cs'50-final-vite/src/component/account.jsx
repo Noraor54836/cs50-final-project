@@ -313,7 +313,7 @@ function Account() {
                 onClick={() => setSetgoal(true)}
               >
                 {" "}
-                <span className="inner-span-text">end date</span>
+                <span className="inner-span-text">start date</span>
               </span>
             </p>
           )}
