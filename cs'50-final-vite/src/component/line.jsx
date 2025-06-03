@@ -172,9 +172,13 @@ function LineChart() {
               No data available
             </option>
           ) : (
-            monthskey.map((month) => (
-              <option key={month} value={month}>
-                {months[month]}
+            monthskey.map((monthk) => (
+              <option
+                key={monthk}
+                value={monthk}
+                selected={month === Number(monthk)}
+              >
+                {months[monthk]}
               </option>
             ))
           )}
